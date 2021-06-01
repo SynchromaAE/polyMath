@@ -1,0 +1,25 @@
+#N canvas 3 89 463 286 10;
+#X msg 181 43 setFraction 3 4;
+#X obj 72 151 isowrap~;
+#X obj 73 200 envrms~;
+#X floatatom 73 221 5 0 0 0 phase - -;
+#X msg 238 109 setFraction 5 4;
+#X msg 344 121 deNormalize \$1;
+#X obj 344 103 hradio 15 1 0 4 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X msg 198 65 setFraction 4 3;
+#X floatatom 127 178 0 0 0 0 offset - -;
+#X msg 218 87 setFraction 4 5;
+#X obj 73 43 inlet~;
+#X obj 118 43 inlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 8 0;
+#X connect 2 0 3 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 5 0;
+#X connect 7 0 1 0;
+#X connect 9 0 1 0;
+#X connect 10 0 1 0;
+#X connect 11 0 1 0;
