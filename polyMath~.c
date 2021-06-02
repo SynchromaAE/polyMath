@@ -1,7 +1,7 @@
 #define GROUPS 256
 #define SLOTS 128
 #define MAXSEQ 2048
-#define VARIATIONS 4
+#define VARIATIONS 6
 
 /* polyMath~ - sequential polyrhythm generator
  * Edward Kelly 2017 - 2021
