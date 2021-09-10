@@ -35,7 +35,7 @@
 #X floatatom 601 564 5 0 0 1 p1-early - -;
 #X obj 530 385 tgl 15 0 empty empty alt 17 7 1 10 -262144 -1 -1 0 1
 ;
-#X obj 794 248 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 794 248 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 794 268 eMult \$1;
 #X floatatom 663 189 5 0.1 99.9 0 - - -;
@@ -43,81 +43,67 @@
 #X obj 576 355 tgl 15 0 empty empty altEarly 17 7 1 10 -262144 -1 -1
 0 1;
 #X text 466 9 NOTES:;
-#N canvas 278 342 850 324 scrambles 0;
-#X msg 54 61 varChange \$1;
-#X obj 54 34 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+#N canvas 278 197 850 469 scrambles 1;
+#X msg 54 101 varChange \$1;
+#X obj 54 74 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
-#X obj 54 263 outlet;
-#X msg 216 65 scramble 4 1 0.5 \, variation 1;
-#X msg 252 108 groupScramble 3 1 0.8 \, variation 1;
-#X obj 420 149 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
--1 -1 0;
-#X obj 420 169 + 1;
-#X msg 420 191 variation \$1;
-#X msg 216 85 scramble 4 1 0.5;
-#X msg 206 149 variation 1;
-#X msg 114 154 jumpTo 4;
-#X msg 101 122 jumpTo 4 1;
-#X msg 168 195 jumpTo 2;
-#X msg 163 265 scramble 2 1 0.3;
-#X msg 289 265 scramble 2 2 1;
-#X msg 284 214 scramble 3 1 1.5;
-#X msg 243 182 jumpTo 2 1;
-#X msg 308 153 jumpTo 1 1;
-#X msg 456 68 scramble 6 1 0.5;
-#X msg 31 205 jumpTo 6 1;
-#X msg 252 36 scramble 1 1 0.5 \, variation 1;
-#X obj 595 86 r \$0-thisJump;
-#X obj 595 107 hradio 15 1 0 11 empty empty empty 0 -8 0 10 -262144
+#X obj 54 303 outlet;
+#X msg 143 380 groupScramble 3 1 0.8 \, variation 1;
+#X msg 163 305 scramble 2 1 0.3;
+#X msg 289 305 scramble 2 2 1;
+#X msg 284 254 scramble 3 1 1.5;
+#X msg 31 245 jumpTo 6 1;
+#X obj 610 254 r \$0-thisJump;
+#X obj 610 275 hradio 15 1 0 11 empty empty empty 0 -8 0 10 -262144
 -1 -1 6;
-#X floatatom 595 127 5 0 0 0 - - -;
-#X obj 579 150 f;
-#X floatatom 732 151 5 0 0 0 - - -;
-#X obj 670 129 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
+#X floatatom 610 295 5 0 0 0 - - -;
+#X obj 594 318 f;
+#X floatatom 747 319 5 0 0 0 - - -;
+#X obj 685 297 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
 -1 -1 1;
-#X obj 670 149 + 1;
-#X obj 732 172 * 0.01;
-#X floatatom 732 194 5 0 0 0 - - -;
-#X obj 589 206 pack f f f;
-#X obj 771 148 s \$0-thisVar;
-#X obj 567 120 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 685 317 + 1;
+#X obj 747 340 * 0.01;
+#X floatatom 747 362 5 0 0 0 - - -;
+#X obj 604 374 pack f f f;
+#X obj 786 316 s \$0-thisVar;
+#X obj 582 288 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 589 228 scramble \$1 \$2 \$3;
-#X msg 401 266 scramble 1 1 1 \, variation 1;
+#X msg 604 396 scramble \$1 \$2 \$3;
+#X msg 401 306 scramble 1 1 1 \, variation 1;
+#X text 374 27 scramble slot 1 to variation 1 by 0.5 (half the elements)
+and then jump to variation 1;
+#X msg 192 35 scramble 1 1 0.5 \, jumpTo 1 1;
+#X text 374 67 scramble slot 4 to variation 2 by 0.75 (3/4 of the elements)
+and then jump to variation 2 of slot 4;
+#X msg 191 71 scramble 4 2 0.75 \, jumpTo 4 2;
+#X msg 189 107 scramble 3 1 1 \, jumpNext 3 1;
+#X text 374 101 scramble slot 3 to variation 1 by 1 (all of the elements)
+and then jump to variation 1 of slot 3 after the current sequencce
+has finished;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
-#X connect 5 0 6 0;
-#X connect 6 0 7 0;
+#X connect 5 0 2 0;
+#X connect 6 0 2 0;
 #X connect 7 0 2 0;
-#X connect 8 0 2 0;
-#X connect 9 0 2 0;
-#X connect 10 0 2 0;
-#X connect 11 0 2 0;
-#X connect 12 0 2 0;
-#X connect 13 0 2 0;
-#X connect 14 0 2 0;
-#X connect 15 0 2 0;
-#X connect 16 0 2 0;
-#X connect 17 0 2 0;
-#X connect 18 0 2 0;
-#X connect 19 0 2 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 1;
+#X connect 11 0 17 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 13 0 18 0;
+#X connect 14 0 17 1;
+#X connect 15 0 16 0;
+#X connect 16 0 17 2;
+#X connect 17 0 20 0;
+#X connect 19 0 11 0;
 #X connect 20 0 2 0;
-#X connect 21 0 22 0;
-#X connect 22 0 23 0;
-#X connect 23 0 24 1;
-#X connect 24 0 30 0;
-#X connect 25 0 28 0;
-#X connect 26 0 27 0;
-#X connect 26 0 31 0;
-#X connect 27 0 30 1;
-#X connect 28 0 29 0;
-#X connect 29 0 30 2;
-#X connect 30 0 33 0;
-#X connect 32 0 24 0;
-#X connect 33 0 2 0;
-#X connect 34 0 2 0;
+#X connect 21 0 2 0;
+#X connect 23 0 2 0;
+#X connect 25 0 2 0;
+#X connect 26 0 2 0;
 #X restore 575 252 pd scrambles;
 #X floatatom 318 423 5 0 0 0 cycles - -;
 #X text 466 24 * event phase may be 0-1 \, or it's original size \,
@@ -126,7 +112,7 @@ depending on the setting of eMult - 0 means original size;
 #X obj 23 191 hradio 15 1 0 10 empty empty empty 0 -8 0 10 -262144
 -1 -1 0;
 #X obj 23 211 + 1;
-#N canvas 249 172 872 313 nextSlot 0;
+#N canvas 249 172 484 313 nextSlot 0;
 #X obj 70 261 outlet;
 #X msg 30 30 jumpTo 3;
 #X msg 54 68 jumpTo 4 1;
@@ -138,12 +124,10 @@ depending on the setting of eMult - 0 means original size;
 ;
 #X text 92 129 jump to slot 4 \, variation 1 at the end of this sequence
 (slot/variation);
-#X msg 137 195 jumpNext 1 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 4 0 0 0;
 #X connect 6 0 0 0;
-#X connect 9 0 0 0;
 #X restore 474 183 pd nextSlot;
 #X obj 353 424 bng 15 250 50 0 empty empty new_bar 17 7 1 10 -262144
 -1 -1;
@@ -208,9 +192,6 @@ output is triggered;
 #X connect 13 0 12 0;
 #X restore 657 253 pd getSeqData;
 #X msg 25 263 slot 0;
-#X text 465 52 ** alternate event may be triggered when altOut is set
-to 1 Then the event phase will alternate between outlet 1 and outlet
-2;
 #N canvas 3 89 450 300 experimental 0;
 #X msg 75 89 autoThreshold \$1;
 #X obj 94 70 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
@@ -526,8 +507,8 @@ to 1 Then the event phase will alternate between outlet 1 and outlet
 #X connect 12 0 13 0;
 #X connect 13 0 14 0;
 #X restore 608 380 pd dataOut;
-#X msg 437 136 altOut 3;
-#X msg 530 136 eMult 1;
+#X msg 437 156 altOut 3;
+#X msg 348 157 eMult 1;
 #X obj 437 98 loadbang;
 #X obj 858 240 hradio 15 1 0 9 empty empty empty 0 -8 0 10 -262144
 -1 -1 0;
@@ -535,9 +516,17 @@ to 1 Then the event phase will alternate between outlet 1 and outlet
 #X obj 196 262 t a;
 #X text 859 367 early;
 #X text 753 367 current;
+#X text 717 180 how much of the preceding event in % before the early
+outputs are triggered;
+#X text 696 188 <--;
+#X text 465 52 ** alternate event may be triggered when altOut is >=
+1 Then the event phase will alternate between outlet 1 and outlet 2
+;
+#X text 404 157 *;
+#X text 500 157 **;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 1 0 77 0;
+#X connect 1 0 76 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
@@ -552,21 +541,21 @@ to 1 Then the event phase will alternate between outlet 1 and outlet
 #X connect 12 0 10 0;
 #X connect 13 0 14 0;
 #X connect 14 0 15 0;
-#X connect 15 0 68 0;
+#X connect 15 0 67 0;
 #X connect 16 0 12 0;
 #X connect 16 0 0 0;
 #X connect 17 0 18 0;
 #X connect 19 0 20 0;
 #X connect 21 0 22 0;
 #X connect 33 0 34 0;
-#X connect 34 0 68 0;
+#X connect 34 0 67 0;
 #X connect 35 0 36 0;
-#X connect 36 0 68 0;
-#X connect 39 0 68 0;
-#X connect 42 0 68 0;
+#X connect 36 0 67 0;
+#X connect 39 0 67 0;
+#X connect 42 0 67 0;
 #X connect 43 0 44 0;
 #X connect 44 0 42 0;
-#X connect 45 0 68 0;
+#X connect 45 0 67 0;
 #X connect 47 0 35 0;
 #X connect 51 0 31 0;
 #X connect 51 1 52 0;
@@ -578,45 +567,45 @@ to 1 Then the event phase will alternate between outlet 1 and outlet
 #X connect 57 1 59 0;
 #X connect 60 0 61 0;
 #X connect 60 1 62 0;
-#X connect 63 0 68 0;
-#X connect 64 0 68 0;
-#X connect 66 0 68 0;
-#X connect 67 0 68 0;
-#X connect 68 0 17 0;
-#X connect 68 1 19 0;
-#X connect 68 2 21 0;
-#X connect 68 3 28 0;
-#X connect 68 4 27 0;
-#X connect 68 5 40 0;
-#X connect 68 6 26 0;
-#X connect 68 7 46 0;
-#X connect 68 8 69 0;
-#X connect 68 9 69 1;
-#X connect 68 10 69 2;
-#X connect 68 11 69 3;
-#X connect 68 12 69 4;
-#X connect 68 13 69 5;
-#X connect 68 14 69 6;
-#X connect 68 15 69 7;
-#X connect 68 16 25 0;
-#X connect 68 17 24 0;
-#X connect 68 18 23 0;
-#X connect 68 19 30 0;
-#X connect 68 20 29 0;
-#X connect 68 21 32 0;
-#X connect 68 22 51 0;
-#X connect 68 23 37 0;
-#X connect 68 24 72 0;
-#X connect 68 25 72 1;
-#X connect 68 26 49 0;
-#X connect 68 27 57 0;
-#X connect 68 28 60 0;
-#X connect 70 0 68 0;
-#X connect 71 0 68 0;
-#X connect 73 0 68 0;
-#X connect 74 0 68 0;
-#X connect 75 0 73 0;
-#X connect 75 0 74 0;
-#X connect 76 0 67 0;
-#X connect 77 0 78 0;
-#X connect 78 0 68 0;
+#X connect 63 0 67 0;
+#X connect 64 0 67 0;
+#X connect 65 0 67 0;
+#X connect 66 0 67 0;
+#X connect 67 0 17 0;
+#X connect 67 1 19 0;
+#X connect 67 2 21 0;
+#X connect 67 3 28 0;
+#X connect 67 4 27 0;
+#X connect 67 5 40 0;
+#X connect 67 6 26 0;
+#X connect 67 7 46 0;
+#X connect 67 8 68 0;
+#X connect 67 9 68 1;
+#X connect 67 10 68 2;
+#X connect 67 11 68 3;
+#X connect 67 12 68 4;
+#X connect 67 13 68 5;
+#X connect 67 14 68 6;
+#X connect 67 15 68 7;
+#X connect 67 16 25 0;
+#X connect 67 17 24 0;
+#X connect 67 18 23 0;
+#X connect 67 19 30 0;
+#X connect 67 20 29 0;
+#X connect 67 21 32 0;
+#X connect 67 22 51 0;
+#X connect 67 23 37 0;
+#X connect 67 24 71 0;
+#X connect 67 25 71 1;
+#X connect 67 26 49 0;
+#X connect 67 27 57 0;
+#X connect 67 28 60 0;
+#X connect 69 0 67 0;
+#X connect 70 0 67 0;
+#X connect 72 0 67 0;
+#X connect 73 0 67 0;
+#X connect 74 0 72 0;
+#X connect 74 0 73 0;
+#X connect 75 0 66 0;
+#X connect 76 0 77 0;
+#X connect 77 0 67 0;
