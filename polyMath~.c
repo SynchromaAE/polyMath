@@ -61,7 +61,6 @@
  * be dealt with in the grand (external to this object) structure using the isobars object. 
  */
 
-
 #ifdef __APPLE__
 #include <sys/types.h>
 #include <sys/time.h>
@@ -85,13 +84,13 @@ typedef struct {
 
 typedef struct _groups
 {
-  int gType[SLOTS];                  // NEW (and as yet undefined at 1 Dec 2018) tuples (gType = 0) or
+  t_int gType[SLOTS];                  // NEW (and as yet undefined at 1 Dec 2018) tuples (gType = 0) or
                                      // linear phase (gType = 1)
-  int nGroups[SLOTS];                // number of groups in this sequence
-  int gStart[GROUPS * SLOTS];        // where in the sequence does each group start?
+  t_int nGroups[SLOTS];                // number of groups in this sequence
+  t_int gStart[GROUPS * SLOTS];        // where in the sequence does each group start?
   t_atom n[GROUPS * SLOTS];          // numerator of the time sig (fraction)
   t_atom d[GROUPS * SLOTS];          // denominator of the time sig
-  int cycles[SLOTS];                 // number of cycles of phasor~
+  t_int cycles[SLOTS];                 // number of cycles of phasor~
   t_atom offset[GROUPS * SLOTS];     // group offset in phase
   t_atom size[GROUPS * SLOTS];       // group size in phase
   t_atom sizeInv[GROUPS * SLOTS];    // 1 / size - so that look-up table can be used instead of math at runtime
@@ -99,38 +98,38 @@ typedef struct _groups
   t_atom remains[GROUPS * SLOTS];    // how much of the phase is left (in case of a 0 entry - skip one and if still 0 use remainder)
                                      // also, if an incomplete list is issued, the last value will be based on this!
                                      // THIS IS NOT WELL DEFINED IN THE CODE AS OF 17th December 2017
-  int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
-  int isUnFilled[SLOTS];               // when the slots are uninitialized it is a 1
+  t_int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
+  t_int isUnFilled[SLOTS];               // when the slots are uninitialized it is a 1
 } t_groups;                         
 
 typedef struct _vars
 {
-  int gType[SLOTS * VARIATIONS];
-  int nGroups[SLOTS * VARIATIONS];                // number of groups in this sequence
-  int gStart[GROUPS * SLOTS * VARIATIONS];        // where in the sequence does each group start?
+  t_int gType[SLOTS * VARIATIONS];
+  t_int nGroups[SLOTS * VARIATIONS];                // number of groups in this sequence
+  t_int gStart[GROUPS * SLOTS * VARIATIONS];        // where in the sequence does each group start?
   t_atom n[GROUPS * SLOTS * VARIATIONS];          // numerator of the time sig (fraction)
   t_atom d[GROUPS * SLOTS * VARIATIONS];          // denominator of the time sig
-  int cycles[SLOTS * VARIATIONS];                 // number of cycles of phasor~
+  t_int cycles[SLOTS * VARIATIONS];                 // number of cycles of phasor~
   t_atom offset[GROUPS * SLOTS * VARIATIONS];     // group offset in phase
   t_atom size[GROUPS * SLOTS * VARIATIONS];       // group size in phase
   t_atom sizeInv[GROUPS * SLOTS * VARIATIONS];    // 1 / size - so that look-up table can be used instead of math at runtime
   //t_atom rLength[GROUPS * SLOTS * VARIATIONS];    // real length of sequence calculated to float precision
   t_atom remains[GROUPS * SLOTS * VARIATIONS];    // how much of the phase * cycles is left (in case of a 0 entry - skip one and if still 0 use remainder)
                                      // also, if an incomplete list is issued, the last value will be based on this!
-  int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
-  int swaps[MAXSEQ];
-  int swapsRef[MAXSEQ * 2];
-  int swapped[MAXSEQ];
-  int groupSwaps[GROUPS];
+  t_int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
+  t_int swaps[MAXSEQ];
+  t_int swapsRef[MAXSEQ * 2];
+  t_int swapped[MAXSEQ];
+  t_int groupSwaps[GROUPS];
 
 } t_vars;                
 
 typedef struct _variations
 {
-  int len[SLOTS * VARIATIONS];                   // how many events are in the current sequence
-  int variations[SLOTS * VARIATIONS];
-  int nGroups[SLOTS * VARIATIONS];
-  int excludes[SLOTS * VARIATIONS * MAXSEQ]; // where a join has been implemented, these should not be available to scramble
+  t_int len[SLOTS * VARIATIONS];                   // how many events are in the current sequence
+  t_int variations[SLOTS * VARIATIONS];
+  t_int nGroups[SLOTS * VARIATIONS]; // DO WE NEED THIS? is it not in _vars? where is it used?
+  t_int excludes[SLOTS * VARIATIONS * MAXSEQ]; // where a join has been implemented, these should not be available to scramble-NOT YET IMPLEMENTED
   t_atom varStep[MAXSEQ * SLOTS * VARIATIONS];
   t_atom allStep[MAXSEQ * SLOTS * VARIATIONS];
   //NEW FOR seqInSlot, Jan 2019
@@ -174,7 +173,7 @@ typedef struct _variations
 
 typedef struct _sequences
 {//allStep filled groupStep groupNum eSize eOff eJoin jSize eAcc1-8 pAcc1-8 eSizeInv denom altOff
-  int len[SLOTS];                   // how many events are in the current sequence
+  t_int len[SLOTS];                   // how many events are in the current sequence
   t_atom allStep[MAXSEQ * SLOTS];   // which event of the total sequence is this?
   //NEW FOR seqInSlot, Jan 2019
   t_atom filled[MAXSEQ * SLOTS];   // for seqInSlot - this will determine which elements are filled, autofilled, and unfilled
@@ -231,9 +230,9 @@ typedef struct _polyMath_tilde
   t_variations var;
   t_vars vGrp;
 
-  int SEQSIZE, VARSIZE, GROUPSIZE, VGROUPSIZE;
+  t_int SEQSIZE, VARSIZE, GROUPSIZE, VGROUPSIZE;
   
-  int firstStart;
+  t_int firstStart;
 
   t_atom outList[MAXSEQ];
   t_atom eventList[EVENTLIST];
@@ -243,99 +242,99 @@ typedef struct _polyMath_tilde
   unsigned long int timeSeed;
 
   //rounder
-  int iRound;
+  t_int iRound;
   t_float fRound, rDiff;
   //writeGroup
   t_float Wsize, WsizeRem, WESize, groupOffset, Woff, WSInv, WOffAcc;
-  int d, Gstart, IsizeRem;
-  //int groupWrite;
+  t_int d, Gstart, IsizeRem;
+  //t_int groupWrite;
   //setGroups
   t_float Goff, Gcycle, Eoff, Grem;
-  int c, e, a, b, h, g, i;
-  int Pslot, Pac, PLStep, PStep;
+  t_int c, e, a, b, h, g, i;
+  t_int Pslot, Pac, PLStep, PStep;
   t_float PGcyc;
   //getVariables
   t_float clockOut, E_Acc1, E_Acc2, E_Acc3, E_Acc4, Pacc1, Pacc2, Pacc3, Pacc4, E_Acc5, E_Acc6, E_Acc7, E_Acc8, Pacc5, Pacc6, Pacc7, Pacc8, Pthis, PJoin;
-  int Gnm;
+  t_int Gnm;
   t_float Gstep, ESize, ESInv, Gn, Gd, GSize, GSInv;
-  int cycles;
+  t_int cycles;
   t_float InVal, PreVal, TotVal, PStepOff;
   //leftovers, perform and joins:
-  int barNew, join, Joined, myBug, pJoin, PJoined, JoinVal, JoinTot, j, k, RW, l, m;
-  int slot, Wstep, Icycle, Gstp, GroupStart, PSlot, JGstt, JGnm;
-  int jFlag, jFirst, joinSuccess, sortFlag; // FLAGS
-  int JSlot, JGrp, JLoc, JLen, JBuf, JGst, initSlot;
+  t_int barNew, join, Joined, myBug, pJoin, PJoined, JoinVal, Jointot, j, k, RW, l, m;
+  t_int slot, Wstep, Icycle, Gstp, GroupStart, PSlot, JGstt, JGnm;
+  t_int jFlag, jFirst, joinSuccess, sortFlag; // FLAGS
+  t_int JSlot, JGrp, JLoc, JLen, JBuf, JGst, initSlot;
   // care must be taken to reset jFlag and jFirst when entering new slot, or writing groups! 30/10/2017
   t_float PESize, PEOff, PESInv, JPESI, group, JGSize, JESize, JJoin, JGn, JGd, JGt;
-  int maxGrp, fGroup;
+  t_int maxGrp, fGroup;
   //aternate signal outs for event seg~
-  int altOut, altNum, eChanged, preChange, eMult, altEarly;
+  t_int altOut, altNum, eChanged, preChange, eMult, altEarly;
   t_float percentVal, eOut, eVal;
 
   //groupThisSlot / jumpTo / jumpNext
-  int thisSlot, changeSlot, changeVar, NStep;
+  t_int thisSlot, changeSlot, changeVar, NStep;
   t_float wrapSubVal, nextShotVal;
   
-  int JlastOffset, JnextOffset;
-  int JlastLen, JnextLen, JiWrap, JnextFlag, JlocateFlag;
+  t_int JlastOffset, JnextOffset;
+  t_int JlastLen, JnextLen, JiWrap, JnextFlag, JlocateFlag;
   t_float JlastCycle, JnextCycle;
   t_float JsizeNext, JoffNext, JwrapCycle;
 
   //scramble - REFACTOR FROM HERE - which are eventually used?
-  int o, p, q, r, s, t, u;
-  int scramMeth, seqLen, halfSeq, swapsNum, doSwaps, swapNdx1, swapNdx2, swapFlag, iFSwapsNum, offsetVar, grpOffset, noRepeats;
+  t_int o, p, q, r, s, t, u;
+  t_int scramMeth, seqLen, halfSeq, swapsNum, doSwaps, swapNdx1, swapNdx2, swapFlag, iFSwapsNum, offsetVar, grpOffset, noRepeats, scLen, scOff;
 
-  int variation, thisVar, scramSlot, varTest, varPerf, scrambling;
+  t_int variation, thisVar, scramSlot, varTest, varPerf, scrambling;
   t_float copyVal, swapVal, seqProb, getD;
 
   t_float fSeqLen, fHalfSeq, fSwapsNum;
-  int copyWell, scramWell, swapWell, groupWell, varWrite;
+  t_int copyWell, scramWell, swapWell, groupWell, varWrite;
   double randNum1, randNum2, randNum3;
-  //int extraSwapFlag; // deprecated: using rounder() function instead
+  //t_int extraSwapFlag; // deprecated: using rounder() function instead
 
-  int VGnm, VGCount, VEJoin;
+  t_int VGnm, VGCount, VEJoin;
   t_float Vd, VESize, VGSize, VGSizeInv, VEOff, VGOff, VJSize, VJoin, VVStep, VVLast, VLastD, VONext, instant, gInstant, eVVal, varOff, VOffG, VPESI, VOff;
-  int swapVal1, swapVal2, newVar, setInstant;
+  t_int swapVal1, swapVal2, newVar, setInstant;
 
-  int autoThreshold;
+  t_int autoThreshold;
   t_float cycleDiff, sizeThreshold, halfSize, sizeFrac;
   
-  //int wrapNextState, wrapThisLen, wrapNextCycle, nextSlotFlag, unScrambleNext, nextScramble, scrambleNext, SStep
+  //t_int wrapNextState, wrapThisLen, wrapNextCycle, nextSlotFlag, unScrambleNext, nextScramble, scrambleNext, SStep
   //t_float cycleWrap, cycleMod, nextSlotWrap, wrapOff, wrapOffSize, floatNextCycle, nextSlotVal, nextSlotWrap, slotSwitchVal
-  int lastLen, nextLen, nextSlot, nextSlotVal, lastSlot, nextVar, validJumpState;
-  int zeroNextPhase, zeroNextVar, zeroNextSlot, lastVar, wrapLen, swapState; // 8th Jan 2018 - preparation for change-slot/variation-on-next-event
+  t_int lastLen, nextLen, nextSlot, nextSlotVal, lastSlot, nextVar, validJumpState;
+  t_int zeroNextPhase, zeroNextVar, zeroNextSlot, lastVar, wrapLen, swapState; // 8th Jan 2018 - preparation for change-slot/variation-on-next-event
   t_float offNext, thisInVal; // 8th Jan 2018 - preparation for change-slot/variation-on-next-event
-  int jumpSlotAtEnd, jumpVarAtEnd;
+  t_int jumpSlotAtEnd, jumpVarAtEnd;
 
   //polyMath_tilde_getSeq
-  int getSlot, getVar, getPar, v, getVarNum;
-  int grpOff, seqOff, seqGrpOff, lenSeq, lenGrp;
+  t_int getSlot, getVar, getPar, v, getVarNum;
+  t_int grpOff, seqOff, seqGrpOff, lenSeq, lenGrp;
   t_float getSeqVal, getGrpVal;
 
   //polyMath_tilde_seqInSlot
-  int seqGrpOffset;
-  int seqSlotOffset;
-  int w, sType, seqPos, seqNum, seqDen, prevSNum, prevSDen;
+  t_int seqGrpOffset;
+  t_int seqSlotOffset;
+  t_int w, sType, seqPos, seqNum, seqDen, prevSNum, prevSDen;
   t_float seqPhase, seqPOff, prevSPhase;
 
   //polyMath_tilde_seqInSlot and swap variable
-  int swapSlot, swapVar, swapLoc, swapShift, x, swapLength;
+  t_int swapSlot, swapVar, swapLoc, swapShift, x, swapLength;
   t_float swapP, swapE;
-  int isSwapList;
-  int isShuffled;
+  t_int isSwapList;
+  t_int isShuffled;
 
-  int pageNum;
+  t_int pageNum;
   t_float durBeat, barBeat, dur1, dur2, BPM, dPhase;
-  int altLen, y, z;
-  //int pageFlag, pageNum, lastPage;
+  t_int altLen, y, z;
+  //t_int pageFlag, pageNum, lastPage;
   //float fPageNum;
 
   //groupScramble
-  int GSMode, GSSlot, GSVar, GSDestVar, GSISwap;
+  t_int GSMode, GSSlot, GSVar, GSDestVar, GSISwap, GSPlace;
   t_float GSScramRand, GSFSwap;
   
   //slotLen
-  int isLength, getSlotLen;
+  t_int isLength, getSlotLen;
   
   t_clock *fOut, *early, *pageTurner;
   t_outlet *clock, *subclock; // from v1
@@ -346,10 +345,10 @@ typedef struct _polyMath_tilde
   // new 28th November 2018, sequences output from rightmost outlet...I have yet to write any code for this (15:21PM, 28th Nov 2018)
 } t_polyMath_tilde;
 
-int rounder(t_polyMath_tilde *x, t_float f, int limit) // limiting round function
+t_int rounder(t_polyMath_tilde *x, t_float f, t_int limit) // limiting round function
 {
   x->fRound = f;
-  x->iRound = (int)f;
+  x->iRound = (t_int)f;
   x->rDiff = (t_float)x->iRound - x->fRound;
   if(x->rDiff >= 0.5) x->iRound++;
   if(x->iRound > limit) x->iRound = limit;
@@ -390,7 +389,7 @@ static void getVariables(t_polyMath_tilde *x)
 
   //assignment of PJoined happens here, and then the value is manipulated in perform. See "FLAGS"
   //  if(x->PJoin > 1) x->PJoined = x->PJoin; // see below
-  x->Gnm = (int)atom_getfloatarg(x->slot * MAXSEQ + x->PStep, x->SEQSIZE, x->seq.groupNum);
+  x->Gnm = (t_int)atom_getfloatarg(x->slot * MAXSEQ + x->PStep, x->SEQSIZE, x->seq.groupNum);
   x->Gstep = atom_getfloatarg(x->slot * MAXSEQ + x->PStep, x->SEQSIZE, x->seq.groupStep);
   // trying this in perform, since it now inhabits a signal outlet:
   //x->PEOff = atom_getfloatarg(x->slot * MAXSEQ + x->PStep, x->SEQSIZE, x->seq.eOff);
@@ -398,15 +397,13 @@ static void getVariables(t_polyMath_tilde *x)
   x->PESInv = atom_getfloatarg(x->slot * MAXSEQ + x->PStep, x->SEQSIZE, x->seq.eSizeInv);
   // 2017 30th October:
   // FLAGS::::::In the clockGen_tilde_perform function
-  /* When a value of an element of x->seq.eJoin is encountered that is greater than 1, its value is passed to x->PJoined.
+  /* When a value of an element of x->seq.eJoin is encountered that is greater than 1, its value should be passed to x->PJoined.
    * The JPESI value is set to 1 / the length of PESiz * x->PJoined.
    * A flag, firstJoin is used to indicate that this was just set - if(x->firstJoin == 0) x->firstJoin = 1;. Another flag, jFlag, is set to 1.
    * Next step, the firstJoin flag is revoked - if(x->firstJoin == 1) x->firstJoin = 0; 
    * but if x->jFlag remains 1 and x->PJoined > 0, x->JPESI is not reset.
    * if x->PJoined == 0 (i.e. the else statement after if(x->PJoined > 0) then x->JPESI is reset to x->PESiz
-   *
-   * This function, getVariables, is kept as minimal as possible, although cout will include a new variable (and outlet) or two
-   * eventLengthNum - rightmost outlet, so that other aspects can be kept at bay, or allowed to proceed if necessary via spigots in Pd
+   * NOT FINISHED!
    */
   x->Gn = atom_getfloatarg(x->slot * GROUPS + x->Gnm, x->GROUPSIZE, x->grp.n);
   x->Gd = atom_getfloatarg(x->slot * GROUPS + x->Gnm, x->GROUPSIZE, x->grp.d);
@@ -450,7 +447,7 @@ static void getVariations(t_polyMath_tilde *x)
   x->PJoin = atom_getfloatarg(x->slot * MAXSEQ + x->varPerf * x->SEQSIZE + x->PStep, x->VARSIZE, x->var.eJoin);
   //assignment of PJoined happens here, and then the value is manipulated in perform. See "FLAGS"
   //  if(x->PJoin > 1) x->PJoined = x->PJoin; // see below
-  x->Gnm = (int)atom_getfloatarg(x->slot * MAXSEQ + x->varPerf * x->SEQSIZE + x->PStep, x->VARSIZE, x->var.groupNum);
+  x->Gnm = (t_int)atom_getfloatarg(x->slot * MAXSEQ + x->varPerf * x->SEQSIZE + x->PStep, x->VARSIZE, x->var.groupNum);
   //  if(x->Gnm != x->PrevG) x->PStepOff = 0;// see below
   x->Gstep = atom_getfloatarg(x->slot * MAXSEQ + x->varPerf * x->SEQSIZE + x->PStep, x->VARSIZE, x->var.groupStep);
   // trying this in perform, since it now inhabits a signal outlet:
@@ -477,7 +474,7 @@ void polyMath_tilde_pageTurn(t_polyMath_tilde *x)
 
 void polyMath_tilde_eChange(t_polyMath_tilde *x)
 {
-  int varSlot;
+  t_int varSlot;
   outlet_float(x->eAlt, (t_float)!x->altNum);
   if(x->changeSlot)
     {
@@ -775,7 +772,7 @@ void polyMath_tilde_cout(t_polyMath_tilde *x)
   outlet_float(x->clock, (t_float)x->PStep + x->PStepOff);
 }
 
-int writeGroup(t_polyMath_tilde *x, int group)
+t_int writeGroup(t_polyMath_tilde *x, t_int group)
 {
   //moving this back to writeGroup
   x->Wsize = x->Gn / x->Gd;
@@ -813,7 +810,7 @@ int writeGroup(t_polyMath_tilde *x, int group)
       else
 	{
 	  x->WOffAcc = atom_getfloatarg(x->slot * MAXSEQ + x->Gstart - 1, x->SEQSIZE, x->seq.eOff) + atom_getfloatarg(x->slot * MAXSEQ + x->Gstart - 1, x->SEQSIZE, x->seq.eSize);
-	  for(x->d = 0; x->d < (int)x->Gn; x->d++)
+	  for(x->d = 0; x->d < (t_int)x->Gn; x->d++)
 	    {
 	      x->Wstep = x->seq.len[x->slot] + x->d;
 	      if(x->myBug == 101) post("x->Wstep = %d",x->Wstep);
@@ -831,18 +828,18 @@ int writeGroup(t_polyMath_tilde *x, int group)
 	      if(x->myBug == 1) post("Step = %d, GStep = %d, WESize = %f, Woff = %f, Write: %d",x->seq.len[x->slot] + x->d, x->d, x->WESize, x->Woff, x->slot * MAXSEQ + x->Wstep);
 	      if(x->myBug == 101) post("step: %d, gStep: %d, seq.eSize: %f, seq.eOff: %f",x->Wstep, (t_int)atom_getfloatarg(x->slot * MAXSEQ + x->Wstep, x->SEQSIZE, x->seq.groupStep), atom_getfloatarg(x->slot * MAXSEQ + x->Wstep, x->SEQSIZE, x->seq.eSize), atom_getfloatarg(x->slot * MAXSEQ + x->Wstep, x->SEQSIZE, x->seq.eOff));
 	    }
-	  x->seq.len[x->slot] += (int)x->Gn;
+	  x->seq.len[x->slot] += (t_int)x->Gn;
 	  x->groupOffset += x->WESize * x->Gn;
 	  return(1);
 	}
     }
 }
 
-int reWriteSeq(t_polyMath_tilde *x)
+t_int reWriteSeq(t_polyMath_tilde *x)
 {
-  for(x->j = x->Gstp + (int)x->JJoin; x->j < x->seq.len[x->JSlot]; x->j++)
+  for(x->j = x->Gstp + (t_int)x->JJoin; x->j < x->seq.len[x->JSlot]; x->j++)
     {
-      x->k = x->j - (int)x->JJoin;
+      x->k = x->j - (t_int)x->JJoin;
       SETFLOAT(&x->seq.eSize[x->JSlot * MAXSEQ + x->k], atom_getfloatarg(x->JSlot * MAXSEQ + x->j, x->SEQSIZE, x->seq.eSize));
       SETFLOAT(&x->seq.eJoin[x->JSlot * MAXSEQ + x->k], atom_getfloatarg(x->JSlot * MAXSEQ + x->j, x->SEQSIZE, x->seq.eJoin));
       SETFLOAT(&x->seq.jSize[x->JSlot * MAXSEQ + x->k], atom_getfloatarg(x->JSlot * MAXSEQ + x->j, x->SEQSIZE, x->seq.jSize));
@@ -881,7 +878,7 @@ void polyMath_tilde_addGroup(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
      x->maxGrp = x->grp.nGroups[x->slot];
      x->Gstart = x->grp.gStart[x->slot * GROUPS + x->maxGrp - 1];
      if(x->myBug == 1) post("x->maxGrp = %d, x->Gstart = %d",x->maxGrp,x->Gstart);
-     x->Gstart += (int)atom_getfloatarg(x->slot * GROUPS + x->maxGrp - 1,x->GROUPSIZE, x->grp.n);
+     x->Gstart += (t_int)atom_getfloatarg(x->slot * GROUPS + x->maxGrp - 1,x->GROUPSIZE, x->grp.n);
      if(x->myBug == 101) post("x->Gstart + x->grp.n = %d",x->Gstart);
      x->Gn = atom_getfloat(argv + 1);
      x->Gd = atom_getfloat(argv + 2);
@@ -926,12 +923,12 @@ void polyMath_tilde_addGroup(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 	     x->grp.gStart[x->slot * GROUPS + x->c] = x->Gstart;
 	     if(x->myBug == 1) post("group write exit code: %d",x->h);
 	     x->c++;
-	     if(x->myBug == 1) post("x->Gn = %d, x->Gstart = %d",(int)x->Gn,(int)x->Gstart);
+	     if(x->myBug == 1) post("x->Gn = %d, x->Gstart = %d",(t_int)x->Gn,(t_int)x->Gstart);
 	     x->Gstart += x->Gn;
 	     x->Gcycle += (x->Gn / x->Gd);
 	     x->grp.nGroups[x->slot]++;
 	     if(x->myBug == 101) post("x->c = %d, x->grp.n = %f, x->grp.d = %f",x->c, atom_getfloatarg(x->slot * GROUPS + x->c, x->GROUPSIZE, x->grp.n), atom_getfloatarg(x->slot * GROUPS + x->c, x->GROUPSIZE, x->grp.d));
-		  //x->seq.len[x->slot] += (int)x->Gn;
+		  //x->seq.len[x->slot] += (t_int)x->Gn;
 	   }
 	 else post("group write unsuccessful");
        }
@@ -957,10 +954,10 @@ void polyMath_tilde_sizeFrac(t_polyMath_tilde *x, t_floatarg f)
 // the next two functions should be moved to the start of the code, and initSeqSlot should be
 // called after the sequence is initialized thus: eventSeq_tilde_initSeqSlot(x, x->slot, 1);
 // The variation writing functions should have the values for seq.filled copied into var.filled
-int swapEventList(t_polyMath_tilde *x, int location, int slot, int var)
+t_int swapEventList(t_polyMath_tilde *x, t_int location, t_int slot, t_int var)
 {
   x->isSwapList = 0;
-  int varSeq = var - 1;
+  t_int varSeq = var - 1;
   if(var > 0)
     {
       SETFLOAT(&x->eventList[0], atom_getfloatarg(slot * MAXSEQ + varSeq * x->SEQSIZE + location, x->VARSIZE, x->var.allStep));
@@ -1026,10 +1023,10 @@ int swapEventList(t_polyMath_tilde *x, int location, int slot, int var)
   return(x->isSwapList);
 }
 
-int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
+t_int addEventList(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var)
 {
-  int isAdded = 0;
-  int varSeq = var - 1;
+  t_int isAdded = 0;
+  t_int varSeq = var - 1;
   if(var > 0)
     {
       SETFLOAT(&x->var.allStep[slot * MAXSEQ + varSeq * x->SEQSIZE + location], atom_getfloatarg(0, EVENTLIST, x->eventList));
@@ -1095,12 +1092,12 @@ int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
   return(isAdded);
 }
 
-int oneToTheRightOrLeft(t_polyMath_tilde *x, int location, int len, int slot, int var, int dir)
+t_int oneToTheRightOrLeft(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var, t_int dir)
 { //tests are carried out in the parent function to make sure this is a valid swap
-  int swapShuffle = 0;
-  int location2 = location - 1;
+  t_int swapShuffle = 0;
+  t_int location2 = location - 1;
   if(dir == -1) location2 = location + 1;
-  int varSeq  = var - 1;
+  t_int varSeq  = var - 1;
   if(var > 0)
     {
       if(location >= len)
@@ -1180,13 +1177,13 @@ int oneToTheRightOrLeft(t_polyMath_tilde *x, int location, int len, int slot, in
   return(swapShuffle);
 }
 
-int onePToTheLeftOrRight(t_polyMath_tilde *x, int location, int len, int slot, int var, int P, int direction)
+t_int onePToTheLeftOrRight(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var, t_int P, t_int direction)
 { //tests are carried out in the parent function to make sure this is a valid swap
-  int swapShuffle = 0;
-  int location2 = 0;
+  t_int swapShuffle = 0;
+  t_int location2 = 0;
   if(direction == -1) location2 = location - 1;
   else location2 = location + 1;
-  int varSeq  = var - 1;
+  t_int varSeq  = var - 1;
   if(var > 0)
     {
       if(location >= len)
@@ -1270,13 +1267,13 @@ int onePToTheLeftOrRight(t_polyMath_tilde *x, int location, int len, int slot, i
   return(swapShuffle);
 }
 
-int oneEToTheLeftOrRight(t_polyMath_tilde *x, int location, int len, int slot, int var, int P, int direction)
+t_int oneEToTheLeftOrRight(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var, t_int P, t_int direction)
 { //tests are carried out in the parent function to make sure this is a valid swap
-  int swapShuffle = 0;
-  int location2 = 0;
+  t_int swapShuffle = 0;
+  t_int location2 = 0;
   if(direction == -1) location2 = location - 1;
   else location2 = location + 1;
-  int varSeq  = var - 1;
+  t_int varSeq  = var - 1;
   if(var > 0)
     {
       if(location >= len)
@@ -1360,16 +1357,16 @@ int oneEToTheLeftOrRight(t_polyMath_tilde *x, int location, int len, int slot, i
   return(swapShuffle);
 }
 
-void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
-  int process = 0;
-  int shuffled = 0;
+  t_int process = 0;
+  t_int shuffled = 0;
   if(argc == 2)
     {
       x->swapSlot = x->slot;
       x->swapVar = x->varPerf;
-      x->swapLoc = (int)atom_getfloat(argv);
-      x->swapShift = (int)atom_getfloat(argv+1);
+      x->swapLoc = (t_int)atom_getfloat(argv);
+      x->swapShift = (t_int)atom_getfloat(argv+1);
       if(x->varTest > 0)
 	{
 	  x->swapLength = x->var.len[x->swapSlot + x->swapVar * SLOTS];
@@ -1389,7 +1386,7 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 			//jiggle events
 			shuffled += oneToTheRightOrLeft(x, x->x, x->swapLength, x->swapSlot, x->varTest, -1);
 		      }
-		    //int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
+		    //t_int addEventList(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var)
 		    process = addEventList(x, x->swapLoc + x->swapShift, x->swapLength, x->swapSlot, x->varTest);
 		  }
 		else if(x->swapShift < 0)
@@ -1430,7 +1427,7 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 			//jiggle events
 			shuffled += oneToTheRightOrLeft(x, x->x, x->swapLength, x->swapSlot, 0, -1);
 		      }
-		    //int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
+		    //t_int addEventList(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var)
 		    process = addEventList(x, x->swapLoc + x->swapShift, x->swapLength, x->swapSlot, x->varTest);
 		  }
 		else if(x->swapShift < 0)
@@ -1452,10 +1449,10 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
     }
   else if(argc == 4)
     {
-      x->swapSlot = (int)atom_getfloat(argv);
-      x->swapVar = (int)atom_getfloat(argv+1);
-      x->swapLoc = (int)atom_getfloat(argv+2);
-      x->swapShift = (int)atom_getfloat(argv+3);
+      x->swapSlot = (t_int)atom_getfloat(argv);
+      x->swapVar = (t_int)atom_getfloat(argv+1);
+      x->swapLoc = (t_int)atom_getfloat(argv+2);
+      x->swapShift = (t_int)atom_getfloat(argv+3);
       if(x->swapSlot < 0 || x->swapSlot > SLOTS)
 	{
 	  post("slot is out of range: %d",x->swapSlot);
@@ -1484,7 +1481,7 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 			//jiggle events
 			shuffled += oneToTheRightOrLeft(x, x->x, x->swapLength, x->swapSlot, x->varTest, -1);
 		      }
-		    //int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
+		    //t_int addEventList(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var)
 		    process = addEventList(x, x->swapLoc + x->swapShift, x->swapLength, x->swapSlot, x->varTest);
 		  }
 		else if(x->swapShift < 0)
@@ -1525,7 +1522,7 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 			//jiggle events
 			shuffled += oneToTheRightOrLeft(x, x->x, x->swapLength, x->swapSlot, 0, -1);
 		      }
-		    //int addEventList(t_polyMath_tilde *x, int location, int len, int slot, int var)
+		    //t_int addEventList(t_polyMath_tilde *x, t_int location, t_int len, t_int slot, t_int var)
 		    process = addEventList(x, x->swapLoc + x->swapShift, x->swapLength, x->swapSlot, x->varTest);
 		  }
 		else if(x->swapShift < 0)
@@ -1548,10 +1545,10 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
   else if(argc == 6)
     {
       //here we will allow the swapping of only the pAcc and eAcc elements
-      x->swapSlot = (int)atom_getfloat(argv);
-      x->swapVar = (int)atom_getfloat(argv+1);
-      x->swapLoc = (int)atom_getfloat(argv+2);
-      x->swapShift = (int)atom_getfloat(argv+3);
+      x->swapSlot = (t_int)atom_getfloat(argv);
+      x->swapVar = (t_int)atom_getfloat(argv+1);
+      x->swapLoc = (t_int)atom_getfloat(argv+2);
+      x->swapShift = (t_int)atom_getfloat(argv+3);
       x->swapP = atom_getfloat(argv+4);
       x->swapE = atom_getfloat(argv+5);
 
@@ -1561,8 +1558,8 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 
 void polyMath_tilde_initSeqSlot(t_polyMath_tilde *x, t_floatarg newSeqSlot, t_floatarg isSeq)
 {
-  int seqSlot = (int)newSeqSlot;
-  int seqIs = (int)isSeq;
+  t_int seqSlot = (t_int)newSeqSlot;
+  t_int seqIs = (t_int)isSeq;
   if(newSeqSlot < SLOTS && newSeqSlot >= 0)
     {
       if(isSeq == 0)
@@ -1599,7 +1596,7 @@ void polyMath_tilde_initSeqSlot(t_polyMath_tilde *x, t_floatarg newSeqSlot, t_fl
  * sample-by-sample. Another object would be cheaper. So how to put two perform functions into one object?
  * 2018 - 11 - 13 - I'll work it out!
  */
-void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   x->seqGrpOffset = x->slot * GROUPS;
   x->seqSlotOffset = x->slot * MAXSEQ;
@@ -1612,7 +1609,7 @@ void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
    */
   if(argc == 4)
     {
-      x->sType = (int)atom_getfloat(argv+3);
+      x->sType = (t_int)atom_getfloat(argv+3);
       if(x->sType == 0)
 	{
 	  //post("Each event needs 3 elements: position, numeral, tuple!");
@@ -1623,9 +1620,9 @@ void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 	   * We set the first element to be 1/12 and the remaining two elements become 5/24 long each.
 	   * An internal state is needed to record the edit status of each element
 	   */
-	  x->seqPos = (int)atom_getfloat(argv);
-	  x->seqNum = (int)atom_getfloat(argv+1);
-	  x->seqDen = (int)atom_getfloat(argv+2);
+	  x->seqPos = (t_int)atom_getfloat(argv);
+	  x->seqNum = (t_int)atom_getfloat(argv+1);
+	  x->seqDen = (t_int)atom_getfloat(argv+2);
 	  if(x->seqNum < 1 || x->seqDen < 1)
 	    {
 	      post("Numerator and denominator must be >= 1!");
@@ -1642,8 +1639,8 @@ void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 		  //event (or more than one) is generated from the previous event's settings,
 		  //but with a 'silent' flag (one of the eAcc/pAcc variables)
 		  //x->prevSNum = x->grp.n[x->grp.nGroups[x->slot] - 1];
-		  x->prevSDen = (int)atom_getfloatarg(x->grp.nGroups[x->slot] - 1, SLOTS, x->grp.d);
-		  int seqDiff = x->seqPos - x->seq.len[x->slot];
+		  x->prevSDen = (t_int)atom_getfloatarg(x->grp.nGroups[x->slot] - 1, SLOTS, x->grp.d);
+		  t_int seqDiff = x->seqPos - x->seq.len[x->slot];
 		  x->seqPhase = (t_float)x->seqNum / (t_float)x->seqDen;
 		  //for(x=0;x<seqDiff;x++)
 		  //{
@@ -1664,124 +1661,19 @@ void polyMath_tilde_seqInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 	}
       else if(x->sType == 1)
 	{
-	  x->seqPos = (int)atom_getfloat(argv);
-	  x->seqNum = (int)atom_getfloat(argv+1);
-	  x->seqDen = (int)atom_getfloat(argv+2);
+	  x->seqPos = (t_int)atom_getfloat(argv);
+	  x->seqNum = (t_int)atom_getfloat(argv+1);
+	  x->seqDen = (t_int)atom_getfloat(argv+2);
 	  
 	}
     }
 }
 
-/* When moving, the graphics need to respond separately, so that you see the resulting sequence before 
+/* When moving, the graphics (not yet implemented) need to respond separately, so that you see the resulting sequence before 
  * you commit (e.g. when you move an element 1 to the right, the element that was there moves to the left)
  */
 
-/*typedef struct _vars
-{
-  int nGroups[SLOTS * VARIATIONS];                // number of groups in this sequence
-  int gStart[GROUPS * SLOTS * VARIATIONS];        // where in the sequence does each group start?
-  t_atom n[GROUPS * SLOTS * VARIATIONS];          // numerator of the time sig (fraction)
-  t_atom d[GROUPS * SLOTS * VARIATIONS];          // denominator of the time sig
-  int cycles[SLOTS * VARIATIONS];                 // number of cycles of phasor~
-  t_atom offset[GROUPS * SLOTS * VARIATIONS];     // group offset in phase
-  t_atom size[GROUPS * SLOTS * VARIATIONS];       // group size in phase
-  t_atom sizeInv[GROUPS * SLOTS * VARIATIONS];    // 1 / size - so that look-up table can be used instead of math at runtime
-  //t_atom rLength[GROUPS * SLOTS * VARIATIONS];    // real length of sequence calculated to foat precision
-  t_atom remains[GROUPS * SLOTS * VARIATIONS];    // how much of the phase * cycles is left (in case of a 0 entry - skip one and if still 0 use rem
-                                     // also, if an incomplete list is issued, the last value will be based on this!
-  int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
-  int swaps[MAXSEQ];
-  int swapsRef[MAXSEQ * 2];
-  int swapped[MAXSEQ];*/
-void polyMath_tilde_groupScramble(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
-{
-  int nGroups;
-  t_float fNGroups;
-  //args: slot, var, destVar, scramRand, (mode CHANGED BEHAVIOUR)
-  //if mode == 0, just do that percentage of scrambles
-  //if mode == 1, ensure exactly that number of unique displacements is carried out (NOT IMPLEMENTED)
-  //if mode == 2, scramble all of them, ensuring that none end up in the same place (order) as before
-  //defaults:
-  x->GSScramRand = 0.5;
-
-  if(argc == 4)
-    {
-      x->GSSlot = (t_int)atom_getfloat(argv+0);
-      x->GSVar = (t_int)atom_getfloat(argv+1);
-      x->GSDestVar = (t_int)atom_getfloat(argv+2);
-      x->GSScramRand = atom_getfloat(argv+3);
-      x->GSMode = 0;
-    }
-  else if(argc == 3)
-    {
-      x->GSSlot = (t_int)atom_getfloat(argv+0);
-      x->GSVar = (t_int)atom_getfloat(argv+1);
-      x->GSDestVar = (t_int)atom_getfloat(argv+2);
-      //x->GSScramRand = atom_getfloat(argv+3);
-      x->GSMode = 2;
-    }
-      //  else if(argc == 4)
-      // {
-      // }
-  if(x->GSSlot >= SLOTS || x->GSSlot < 0) post("slot must be a whole number from 0 to %d",SLOTS - 1);
-  else if(x->GSVar < 0 || x->GSVar > VARIATIONS) post("var must bo 0 (no-var) or a whole number from 1 to %d",VARIATIONS);
-  else if(x->GSDestVar < 0 || x->GSDestVar > VARIATIONS) post("dest var must bo 0 (no-var) or a whole number from 1 to %d",VARIATIONS);
-  else if(x->GSScramRand < 0 || x->GSScramRand > 1) post("randomness must be a floating point number from 0 to 1");
-  else
-    {
-      if(x->GSMode == 0)
-	{
-	  /*x->randNum1 = drand48();
-	    x->fSwapsNum = x->fSeqLen * prob;
-	    x->swapsNum = rounder(x,x->fSwapsNum,x->seqLen - 1);
-	    x->doSwaps = x->swapsNum;*/
-	  if(x->GSVar == 0)
-	    {
-	      
-	    }
-	  post("groupScramble Mode 0: NOT YET IMPLEMENTED!");
-	}
-      else if(x->GSMode == 1)
-	{
-	  post("groupScramble Mode 1: NOT YET IMPLEMENTED!");
-	}
-      else if(x->GSMode == 2)
-	{
-	  if(x->GSVar > 0) x->swapsNum = x->vGrp.nGroups[x->GSSlot + x->GSVar * SLOTS];
-	  else x->swapsNum = x->grp.nGroups[x->GSSlot];
-	  x->fSwapsNum = (t_float)x->swapsNum;
-	  for(x->o = 0; x->o < x->swapsNum; x->o++)
-	    {
-	      x->vGrp.groupSwaps[x->o] = -1;
-	    }
-	  while(x->swapsNum)
-	    {
-	      x->o = 0;
-	      x->randNum1 = drand48();
-	      x->randNum2 = drand48();
-	      x->GSFSwap = x->randNum1 * x->fSwapsNum;
-	      x->GSISwap = (t_int)x->GSFSwap;
-	      if(x->o != x->GSISwap)
-		{
-		  x->vGrp.groupSwaps[x->GSISwap] = x->o;
-		  x->o++;
-		  x->swapsNum--;
-		}
-	      else if(x->swapsNum == 1 && x->o == x->GSISwap)
-		{
-		  //kludge? recursion? ignore? ignore!
-		  x->vGrp.groupSwaps[x->GSISwap] = x->o;
-		  //x->o++;
-		  x->swapsNum--;		  
-		}
-	    }
-	  //t_int scramSuccess = scramGroup(x, x->GSSlot, x->
-	}
-    }
-  //else post("Insufficient arguments to groupScramble!");  
-}
-
-/*  int varSeq = var - 1;
+/*  t_int varSeq = var - 1;
   if(var > 0)
     {
     SETFLOAT(&x->eventList[0], atom_getfloatarg(slot * MAXSEQ + varSeq * x->SEQSIZE + location, x->VARSIZE, x->var.allStep));
@@ -1805,12 +1697,12 @@ t_int scramGroup(t_polyMath_tilde *x, t_int slot, t_int sVar, t_int dVar, t_int 
 }
 
 
-void polyMath_tilde_groupInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_groupInSlot(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   x->grp.gType[x->slot] = 0;
-  int groupOffset = x->slot * GROUPS;
-  int slotOffset = x->slot * MAXSEQ;
-  int i, mark;
+  t_int groupOffset = x->slot * GROUPS;
+  t_int slotOffset = x->slot * MAXSEQ;
+  t_int i, mark;
   x->s = 0;
   x->Woff = 0;
   mark = 0;
@@ -1831,15 +1723,15 @@ void polyMath_tilde_groupInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 	  if(x->autoThreshold && x->halfSize < x->sizeThreshold) x->sizeThreshold = x->halfSize; 
 	}
       else post("values not greater than 0!");
-      x->seq.len[x->slot] += (int)x->Gn;
+      x->seq.len[x->slot] += (t_int)x->Gn;
       x->grp.gStart[groupOffset + x->r] = mark;
       x->t = 0;
       x->GSize = 0;
       x->WESize = 1 / x->Gd;
       x->WSInv = 1 / x->WESize;
       //post("WESize = %f, WSI = %f",x->WESize,x->WSInv);
-      //for(x->s; x->s < x->s + (int)x->Gn; x->s++)
-      for(x->s = 0;x->s < (int)x->Gn; x->s++)
+      //for(x->s; x->s < x->s + (t_int)x->Gn; x->s++)
+      for(x->s = 0;x->s < (t_int)x->Gn; x->s++)
 	{
 	  if(x->Gd > 0.0f && x->Gd > 0.0f)
 	    {
@@ -1869,7 +1761,7 @@ void polyMath_tilde_groupInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
       x->grp.nGroups[x->slot]++;
       x->s++;
     }
-  x->Icycle = (int)x->Goff;
+  x->Icycle = (t_int)x->Goff;
   x->Gcycle = x->Goff;
   x->cycleDiff = x->Gcycle - (t_float)x->Icycle;
   if(x->cycleDiff > x->sizeThreshold && 1 - x->cycleDiff > x->sizeThreshold)
@@ -1930,14 +1822,14 @@ void polyMath_tilde_groupInSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_at
 
 void polyMath_tilde_thisSlot(t_polyMath_tilde *x, t_floatarg f)
 {
-  x->thisSlot = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (int)f;
+  x->thisSlot = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (t_int)f;
 }
 
-void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
-  int groupOffset = x->thisSlot * GROUPS;
-  int slotOffset = x->thisSlot * MAXSEQ;
-  int i, mark;
+  t_int groupOffset = x->thisSlot * GROUPS;
+  t_int slotOffset = x->thisSlot * MAXSEQ;
+  t_int i, mark;
   x->s = 0;
   x->Woff = 0;
   mark = 0;
@@ -1956,7 +1848,7 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_
 	  SETFLOAT(&x->grp.d[groupOffset + x->r],x->Gd);
 	  x->halfSize = (1 / x->Gd) * x->sizeFrac;
 	  if(x->autoThreshold && x->halfSize < x->sizeThreshold) x->sizeThreshold = x->halfSize; 
-	  x->seq.len[x->thisSlot] += (int)x->Gn;
+	  x->seq.len[x->thisSlot] += (t_int)x->Gn;
 	  if(x->myBug == 11) post("seq.len[x->slot] = %d",x->seq.len[x->slot]);
 	  x->grp.gStart[groupOffset + x->r] = mark;
 	  x->t = 0;
@@ -1964,8 +1856,8 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_
 	  x->WESize = 1 / x->Gd;
 	  x->WSInv = 1 / x->WESize;
 	  //post("WESize = %f, WSI = %f",x->WESize,x->WSInv);
-	  //for(x->s; x->s < x->s + (int)x->Gn; x->s++)
-	  for(x->s = 0;x->s < (int)x->Gn; x->s++)
+	  //for(x->s; x->s < x->s + (t_int)x->Gn; x->s++)
+	  for(x->s = 0;x->s < (t_int)x->Gn; x->s++)
 	    {
 	      if(x->Gd > 0.0f && x->Gd > 0.0f)
 	      {
@@ -1983,7 +1875,7 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_
 		  x->Woff += x->WESize;
 		  x->t++;
 		}
-	      else post("You can't have size <= 0 - Gn = %d, Gd = %d",(int)x->Gn,(int)x->Gd);
+	      else post("You can't have size <= 0 - Gn = %d, Gd = %d",(t_int)x->Gn,(t_int)x->Gd);
 	    }
 	  mark += x->s;
 	  SETFLOAT(&x->grp.offset[groupOffset + x->r],x->Goff);
@@ -1998,7 +1890,7 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_
       else post("values not greater than 0!");
     }
 
-  x->Icycle = (int)x->Goff;
+  x->Icycle = (t_int)x->Goff;
   x->Gcycle = x->Goff;
   x->cycleDiff = x->Gcycle - (t_float)x->Icycle;
   if(x->cycleDiff > x->sizeThreshold && 1 - x->cycleDiff > x->sizeThreshold)
@@ -2057,7 +1949,7 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, int argc, t_
     }
 }
 
-void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 // 31/10 We need an init 1 slot method so that the slot can be wiped before setting groups
 {
   x->Goff = 0;
@@ -2103,7 +1995,7 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 	      if(x->Gn > x->Gd)
 		{
 		  x->WsizeRem = x->Gn / x->Gd;
-		  x->IsizeRem = (int)x->WsizeRem;
+		  x->IsizeRem = (t_int)x->WsizeRem;
 		  x->Grem = 1 - (x->WsizeRem - (t_float)x->IsizeRem);
 		}
 	      if(x->h > 0)
@@ -2111,10 +2003,10 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 		  x->grp.gStart[x->slot * GROUPS + x->c] = x->Gstart;
 		  if(x->myBug > 0) post("group write exit code: %d",x->h);
 		  x->c++;
-		  if(x->myBug == 1) post("x->Gn = %d, x->Gstart = %d",(int)x->Gn,(int)x->Gstart);
+		  if(x->myBug == 1) post("x->Gn = %d, x->Gstart = %d",(t_int)x->Gn,(t_int)x->Gstart);
 		  x->Gstart += x->Gn;
 		  x->Gcycle += (x->Gn / x->Gd);
-		  x->seq.len[x->slot] += (int)x->Gn;
+		  x->seq.len[x->slot] += (t_int)x->Gn;
 		}
 	      else post("group write unsuccessful");
 	    }
@@ -2123,7 +2015,7 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
       // last must be all zeroes?
       //
       if(x->myBug > 0) post("x->c = %d",x->c);
-      x->Icycle = (int)x->Gcycle;
+      x->Icycle = (t_int)x->Gcycle;
       if(x->Gcycle - (t_float)x->Icycle > 0.001)
 	{
 	  x->Grem = x->Gcycle - (t_float)x->Icycle;
@@ -2145,11 +2037,11 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
 	  x->grp.nGroups[x->slot] = (argc - 1) / 2;
 	  x->grp.fillGroup[x->slot] = 0;
 	}
-      /*if(x->Gcycle > (t_float)((int)x->Gcycle))
+      /*if(x->Gcycle > (t_float)((t_int)x->Gcycle))
 	{
-	  x->grp.cycles[x->slot] = (int)x->Gcycle + 1;
+	  x->grp.cycles[x->slot] = (t_int)x->Gcycle + 1;
 	}
-	else*/ x->grp.cycles[x->slot] = (int)x->Gcycle;
+	else*/ x->grp.cycles[x->slot] = (t_int)x->Gcycle;
       post("Gcycle = %f",x->Gcycle);
       SETFLOAT(&x->grp.remains[x->slot],x->Grem); // if there is a gap at the end, it is this long
       //x->seq.len[x->slot] = x->e + 1; // length of the sequence
@@ -2157,16 +2049,16 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom
   //  getVariables(x); // perhaps we might not do this here!
 }
 
-void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc == 5) // Pslot, step, (p1/2/3/4), pNum, pVal
     {
-      x->PSlot = (int)atom_getfloat(argv);
-      x->Pac = (int)atom_getfloat(argv+2);
+      x->PSlot = (t_int)atom_getfloat(argv);
+      x->Pac = (t_int)atom_getfloat(argv+2);
       switch(x->Pac)
 	{
 	case(1):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  if(x->myBug > 0)
 	    {
@@ -2177,39 +2069,39 @@ void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *arg
 	  SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(2):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc2[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc2[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(3):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(4):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	case(5):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc5[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc5[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	case(6):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc6[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc6[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	case(7):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc7[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc7[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	case(8):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc8[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc8[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
@@ -2224,22 +2116,22 @@ void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *arg
     }
 }
 
-void polyMath_tilde_setPOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_setPOnly(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc == 4) // Pslot, step, (p1/2/3/4), pNum
     {
-      x->PSlot = (int)atom_getfloat(argv);
-      x->Pac = (int)atom_getfloat(argv+2);
+      x->PSlot = (t_int)atom_getfloat(argv);
+      x->Pac = (t_int)atom_getfloat(argv+2);
       switch(x->Pac)
 	{
 	case(1):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(2):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  if(x->myBug > 0)
 	    {
@@ -2250,37 +2142,37 @@ void polyMath_tilde_setPOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 	  //SETFLOAT(&x->seq.eAcc2[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(3):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(4):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(5):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc5[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(6):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc6[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(7):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc7[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
 	  break;
 	case(8):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  SETFLOAT(&x->seq.pAcc8[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  //SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
@@ -2295,22 +2187,22 @@ void polyMath_tilde_setPOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
     }
 }
 
-void polyMath_tilde_setVOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_setVOnly(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc == 4) // Pslot, step, (p1/2/3/4), vNum
     {
-      x->PSlot = (int)atom_getfloat(argv);
-      x->Pac = (int)atom_getfloat(argv+2);
+      x->PSlot = (t_int)atom_getfloat(argv);
+      x->Pac = (t_int)atom_getfloat(argv+2);
       switch(x->Pac)
 	{
 	case(1):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(2):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  if(x->myBug > 0)
 	    {
@@ -2321,37 +2213,37 @@ void polyMath_tilde_setVOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 	  SETFLOAT(&x->seq.eAcc2[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(3):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc3[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(4):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc4[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(5):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc5[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(6):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc6[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(7):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc7[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  break;
 	case(8):
-	  x->PLStep = (int)atom_getfloat(argv+1);
+	  x->PLStep = (t_int)atom_getfloat(argv+1);
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  //SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc8[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
@@ -2374,7 +2266,7 @@ void polyMath_tilde_setVOnly(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 
 void polyMath_tilde_slot(t_polyMath_tilde *x, t_floatarg f)
 {
-  x->slot = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (int)f;
+  x->slot = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (t_int)f;
   //SETFLOAT(&x->seq.wrapCycles1[x->s],x->JoffNext);
   //x->outList[0] = (t_float)x->slot;
   //x->outList[1] = (t_float)x->variation;
@@ -2386,8 +2278,8 @@ void polyMath_tilde_slot(t_polyMath_tilde *x, t_floatarg f)
 
 void polyMath_tilde_slotLen(t_polyMath_tilde *x, t_floatarg f)
 {
-  x->getSlotLen = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (int)f;
-  //int isLength, int getSlot;
+  x->getSlotLen = f < 0 ? 0 : f >= SLOTS ? SLOTS - 1 : (t_int)f;
+  //t_int isLength, t_int getSlot;
   x->isLength = x->seq.len[x->getSlotLen];
   SETFLOAT(&x->outList[0], (t_float)x->getSlotLen);
   SETFLOAT(&x->outList[1], (t_float)x->isLength);
@@ -2396,18 +2288,18 @@ void polyMath_tilde_slotLen(t_polyMath_tilde *x, t_floatarg f)
 }
 
 //useless: lastLen
-void polyMath_tilde_jumpNext(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_jumpNext(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
-  //int lastOffset, nextOffset;
+  //t_int lastOffset, nextOffset;
   x->validJumpState = 0;
   //lastOffset = x->slot * MAXSEQ; nextOffset = x->slot * MAXSEQ; // just initialize in case no args presented
   if(argc == 2)
     {
       x->lastVar = x->varPerf;
       x->lastSlot = x->slot;
-      x->nextSlot = (int)atom_getfloat(argv);
+      x->nextSlot = (t_int)atom_getfloat(argv);
       x->nextSlot = x->nextSlot < 0 ? 0 : x->nextSlot >= SLOTS ? SLOTS - 1 : x->nextSlot; 
-      x->nextVar = (int)atom_getfloat(argv+1);
+      x->nextVar = (t_int)atom_getfloat(argv+1);
       x->nextVar = x->nextVar < 0 ? 0 : x->nextVar >= VARIATIONS ? VARIATIONS : x->nextVar;
       if(x->scrambling == 1) x->JlastOffset = x->lastSlot * MAXSEQ + x->lastVar * x->SEQSIZE;
       else x->JlastOffset = x->lastSlot * MAXSEQ;
@@ -2432,7 +2324,7 @@ void polyMath_tilde_jumpNext(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 	}
       else
 	{
-	  if(x->var.len[x->slot + (x->nextVar - 1) * SLOTS] == 0)
+	  if(x->var.variations[x->slot + (x->nextVar - 1) * SLOTS] == 0)
 	    {
 	      post("Invalid jump state - variation not defined [;-(");
 	      x->validJumpState = 0;
@@ -2449,7 +2341,7 @@ void polyMath_tilde_jumpNext(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
       x->nextVar = 0;
       x->lastVar = x->varPerf;
       x->lastSlot = x->slot;
-      x->nextSlot = (int)atom_getfloat(argv);
+      x->nextSlot = (t_int)atom_getfloat(argv);
       x->nextSlot = x->nextSlot < 0 ? 0 : x->nextSlot >= SLOTS ? SLOTS - 1 : x->nextSlot;
       if(x->myBug == 10) post("nextSlot = %d",x->nextSlot);
       x->nextVar = 0;
@@ -2489,10 +2381,10 @@ void polyMath_tilde_jumpNext(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
     }
 }
 
-void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv) // Jan 17th 2018
+void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv) // Jan 17th 2018
 {
-  //int lastOffset, nextOffset;
-  //int lastLen, nextLen, iWrap, nextFlag, locateFlag;
+  //t_int lastOffset, nextOffset;
+  //t_int lastLen, nextLen, iWrap, nextFlag, locateFlag;
   //t_float lastCycle, nextCycle;
   //t_float sizeLast, offLast,
   //  sizeNext, offNext, wrapCycle;
@@ -2502,10 +2394,10 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
     {
       x->lastVar = x->varPerf;
       x->lastSlot = x->slot;
-      x->nextSlot = (int)atom_getfloat(argv);
+      x->nextSlot = (t_int)atom_getfloat(argv);
       x->nextSlot = x->nextSlot < 0 ? 0 : x->nextSlot >= SLOTS ? SLOTS - 1 : x->nextSlot; 
-      x->nextVar = (int)atom_getfloat(argv+1);
-      x->nextVar = x->nextVar < 0 ? 0 : x->nextVar >= VARIATIONS ? VARIATIONS : x->nextVar;
+      x->nextVar = (t_int)atom_getfloat(argv+1);
+      x->nextVar = x->nextVar < 0 ? 0 : x->nextVar >= VARIATIONS ? VARIATIONS - 1: x->nextVar;
       if(x->scrambling == 1) x->JlastOffset = x->lastSlot * MAXSEQ + x->lastVar * x->SEQSIZE;
       else x->JlastOffset = x->lastSlot * MAXSEQ;
       if(x->nextVar > 0)
@@ -2514,7 +2406,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 	  x->varTest = x->nextVar;
 	  x->JnextOffset = x->nextSlot * MAXSEQ + x->varPerf * x->SEQSIZE;
 	  //x->JnextOffset = x->nextSlot * MAXSEQ + (x->nextVar - 1) * x->SEQSIZE;
-	  if(x->myBug == 10) post("x->JnextOffset = %d, x->nextSlot = %d, x->varPerf = %d",x->JnextOffset,x->nextSlot,x->varPerf);
+	  if(x->myBug == 10) post("x->JnextOffset = %d, x->nextSlot = %d, x->varPerf = %d", x->JnextOffset, x->nextSlot, x->varPerf);
 	}
       else x->JnextOffset = x->nextSlot * MAXSEQ;
       if(x->nextVar == 0)
@@ -2533,7 +2425,15 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 	}
       else
 	{
-	  if(x->var.len[x->slot + (x->nextVar - 1) * SLOTS] == 0)
+	  //x->var.variations[x->slot + x->thisVar * SLOTS] = 1;
+	  if(x->myBug == 9)
+	    {
+	      post("x->var.variations: %d", x->var.variations[x->slot + (x->nextVar - 1) * SLOTS]);
+	      post("x->var.variations: %d", x->var.variations[x->slot + x->nextVar * SLOTS]);
+	      //post("x->var.variations: %d", x->var.variations[x->slot + (x->nextVar + 1) * SLOTS]);
+
+	    }
+	  if(x->var.variations[x->slot + (x->nextVar - 1) * SLOTS] == 0)
 	    {
 	      post("Invalid jump state - variation not defined [;-(");
 	      x->validJumpState = 0;
@@ -2552,7 +2452,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
       x->nextVar = 0;
       x->lastVar = x->varPerf;
       x->lastSlot = x->slot;
-      x->nextSlot = (int)atom_getfloat(argv);
+      x->nextSlot = (t_int)atom_getfloat(argv);
       x->nextSlot = x->nextSlot < 0 ? 0 : x->nextSlot >= SLOTS ? SLOTS - 1 : x->nextSlot;
       if(x->myBug == 10) post("nextSlot = %d",x->nextSlot);
       x->nextVar = 0;
@@ -2651,7 +2551,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 			{
 			  x->JsizeNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->VARSIZE, x->var.eSize);
 			  x->JoffNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->VARSIZE, x->var.varOff);
-			  x->JiWrap = (x->s / x->JnextLen) * (int)x->JnextCycle;
+			  x->JiWrap = (x->s / x->JnextLen) * (t_int)x->JnextCycle;
 			  x->Woff += x->JsizeNext;
 			  if(x->myBug == 10) post("x->s = %d, x->JsizeNext = %f, x->JoffNext = %f",x->s,x->JsizeNext,x->JoffNext);
 			  SETFLOAT(&x->seq.wrapCycles1[x->s],x->JoffNext);
@@ -2670,7 +2570,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 			  x->JsizeNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->SEQSIZE, x->seq.eSize);
 			  x->JoffNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->SEQSIZE, x->seq.eOff);
 			  if(x->myBug == 10) post("x->s = %d, x->JsizeNext = %f, x->JoffNext = %f",x->s,x->JsizeNext,x->JoffNext);
-			  x->JiWrap = (x->s / x->JnextLen) * (int)x->JnextCycle;
+			  x->JiWrap = (x->s / x->JnextLen) * (t_int)x->JnextCycle;
 			  x->Woff += x->JsizeNext;
 			  SETFLOAT(&x->seq.wrapCycles1[x->s],x->JoffNext);
 			  SETFLOAT(&x->seq.wrapCycles2[x->s],(t_float)x->JiWrap);
@@ -2696,7 +2596,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 			  x->JsizeNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->VARSIZE, x->var.eSize);
 			  x->JoffNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->VARSIZE, x->var.varOff);
 			  if(x->myBug == 10) post("x->s = %d, x->JsizeNext = %f, x->JoffNext = %f",x->s,x->JsizeNext,x->JoffNext);
-			  x->JiWrap = (x->s / x->JnextLen) * (int)x->JnextCycle;
+			  x->JiWrap = (x->s / x->JnextLen) * (t_int)x->JnextCycle;
 			  x->Woff += x->JsizeNext;
 			  SETFLOAT(&x->seq.wrapCycles1[x->s],x->JoffNext);
 			  SETFLOAT(&x->seq.wrapCycles2[x->s],(t_float)x->JiWrap);
@@ -2714,7 +2614,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 			  x->JsizeNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->SEQSIZE, x->seq.eSize);
 			  x->JoffNext = atom_getfloatarg(x->JnextOffset + (x->s % x->JnextLen), x->SEQSIZE, x->seq.eOff);
 			  if(x->myBug == 10) post("x->s = %d, x->JsizeNext = %f, x->JoffNext = %f",x->s,x->JsizeNext,x->JoffNext);
-			  x->JiWrap = (x->s / x->JnextLen) * (int)x->JnextCycle;
+			  x->JiWrap = (x->s / x->JnextLen) * (t_int)x->JnextCycle;
 			  x->Woff += x->JsizeNext;
 			  SETFLOAT(&x->seq.wrapCycles1[x->s],x->JoffNext);
 			  SETFLOAT(&x->seq.wrapCycles2[x->s],(t_float)x->JiWrap);
@@ -2764,7 +2664,7 @@ void polyMath_tilde_jumpTo(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 void polyMath_tilde_variation(t_polyMath_tilde *x, t_floatarg f) // OBSOLETE when starting from !0 - use _jumpTo instead
 {
   //THIS WILL NEED TO BE REVISITED after the completion of the re-factoring of polyMath_tilde_nextSlot in the perf function!
-  x->varTest = f < 0 ? 0 : f > 8 ? 8 : (int)f;
+  x->varTest = f < 0 ? 0 : f > 8 ? 8 : (t_int)f;
   if(x->varTest > 0)
     {
       x->lastVar = x->varPerf;
@@ -2773,7 +2673,7 @@ void polyMath_tilde_variation(t_polyMath_tilde *x, t_floatarg f) // OBSOLETE whe
     }
 }
 
-int copySeq(t_polyMath_tilde *x, int slot, int varOffset)
+t_int copySeq(t_polyMath_tilde *x, t_int slot, t_int varOffset)
 {
   x->copyWell = 1;
   for(x->o = 0; x->o < x->seq.len[slot]; x->o++)
@@ -2855,12 +2755,12 @@ int copySeq(t_polyMath_tilde *x, int slot, int varOffset)
   return(x->copyWell);
 }
 
-int scrambleSeq(t_polyMath_tilde *x, int varOffset, int slot)
+t_int scrambleSeq(t_polyMath_tilde *x, t_int varOffset, t_int slot)
 {
   x->scramWell = 1;
   for(x->q = 0; x->q < x->doSwaps; x->q++) 
     {
-      //int scrambleSeq(t_polyMath_tilde *x, int slot, int varOffset, int var, int len, t_float prob)
+      //t_int scrambleSeq(t_polyMath_tilde *x, t_int slot, t_int varOffset, t_int var, t_int len, t_float prob)
       //here is where we rewrite VARIATION SEQUENCES
       x->swapVal1 = x->vGrp.swapsRef[x->q];
       x->swapVal2 = x->vGrp.swapsRef[x->q + MAXSEQ];
@@ -2892,7 +2792,7 @@ int scrambleSeq(t_polyMath_tilde *x, int varOffset, int slot)
       SETFLOAT(&x->var.eJoin[varOffset + x->swapVal2],x->swapVal);
       if(x->swapVal > 1)
 	{
-          for(x->r = 0; x->r < (int)x->swapVal; x->r++)
+          for(x->r = 0; x->r < (t_int)x->swapVal; x->r++)
 	    {
 	      SETFLOAT(&x->var.eJoin[varOffset + x->swapVal1 + x->r],1);
 	      //excludes?
@@ -2938,12 +2838,334 @@ int scrambleSeq(t_polyMath_tilde *x, int varOffset, int slot)
       x->swapVal = atom_getfloatarg(slot * MAXSEQ + x->swapVal1, x->SEQSIZE, x->seq.denom);
       SETFLOAT(&x->var.denom[varOffset + x->swapVal2],x->swapVal);
       if(x->swapVal == 0) x->scramWell = 0;
-      if(x->myBug == 8) post("denom = %d",(int)x->swapVal);
+      if(x->myBug == 8) post("denom = %d",(t_int)x->swapVal);
     }
   return(x->scramWell);
 }
 
-int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var, int len)
+t_int copySeqElements(t_polyMath_tilde *x, t_int slot, t_int var, t_int destVar, t_int groupOffset, t_int newGroupOffset, t_int length)
+{
+  x->copyWell = 1;
+  t_int loc, destLoc;
+  for(x->r = 0; x->r < length; x->r++)
+    {
+      if(var == 0)
+	{
+	  loc = slot * MAXSEQ + groupOffset + x->r;
+	  destLoc = slot * MAXSEQ + destVar * x->SEQSIZE + newGroupOffset + x->r;
+	}
+      else
+	{
+	//slot * MAXSEQ + varSeq * x->SEQSIZE + location
+	  loc = slot * MAXSEQ + var * x->VARSIZE + x->r;
+	  destLoc = slot * MAXSEQ + destVar * x->VARSIZE + newGroupOffset + x->r;
+	}
+      if(var == 0)
+	{
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.allStep);
+	  SETFLOAT(&x->var.varStep[destLoc],x->copyVal);
+	  SETFLOAT(&x->var.allStep[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.groupStep);
+	  SETFLOAT(&x->var.groupStep[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.groupNum);
+	  SETFLOAT(&x->var.groupNum[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eSize);
+	  //if(x->myBug == 8) post("x->copyVal = %f",x->copyVal);
+	  SETFLOAT(&x->var.eSize[destLoc],x->copyVal);
+	  /*if(x->myBug == 15)
+	    {
+	      post("CHECK COPY VALUES:");
+	      post("varOffset = %d",varOffset);
+	      post("eSize = %f",x->copyVal);
+	      //  for(x->o = 0; x->o < x->seq.len[slot]; x->o++)
+	      //x->offsetVar = x->scramSlot * MAXSEQ + x->thisVar * x->SEQSIZE;
+	      post("scramSlot = %d, thisVar = %d",(varOffset - (x->thisVar * x->SEQSIZE)) / MAXSEQ, (varOffset - (x->scramSlot * MAXSEQ)) / x->SEQSIZE);
+	      post("x->o = %d",x->o);
+	      }
+      if(atom_getfloatarg(destLoc, x->VARSIZE, x->var.eSize) == 0)
+	{
+	  post("Event size must be greater than 0 :-( copyVal = %f",x->copyVal);
+	  x->copyWell = 0;
+	}*/
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eOff);
+	  SETFLOAT(&x->var.eOff[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eJoin);
+	  SETFLOAT(&x->var.eJoin[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.jSize);
+	  SETFLOAT(&x->var.jSize[destLoc],x->copyVal);
+	  /*if(atom_getfloatarg(destLoc, x->VARSIZE, x->var.jSize) == 0)
+	    {
+	      post("Join size must be greater than 0 :-(");
+	      x->copyWell = 0;
+	      }*/
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eSizeInv);
+	  SETFLOAT(&x->var.eSizeInv[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc1);
+	  SETFLOAT(&x->var.eAcc1[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc1);
+	  SETFLOAT(&x->var.pAcc1[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc2);
+	  SETFLOAT(&x->var.eAcc2[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc2);
+	  SETFLOAT(&x->var.pAcc2[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc3);
+	  SETFLOAT(&x->var.eAcc3[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc3);
+	  SETFLOAT(&x->var.pAcc3[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc4);
+	  SETFLOAT(&x->var.eAcc4[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc4);
+	  SETFLOAT(&x->var.pAcc4[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc5);
+	  SETFLOAT(&x->var.eAcc5[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc5);
+	  SETFLOAT(&x->var.pAcc5[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc6);
+	  SETFLOAT(&x->var.eAcc6[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc6);
+	  SETFLOAT(&x->var.pAcc6[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc7);
+	  SETFLOAT(&x->var.eAcc7[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc7);
+	  SETFLOAT(&x->var.pAcc7[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.eAcc8);
+	  SETFLOAT(&x->var.eAcc8[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.pAcc8);
+	  SETFLOAT(&x->var.pAcc8[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->SEQSIZE, x->seq.denom);
+	  SETFLOAT(&x->var.denom[destLoc],x->copyVal);
+      x->GSPlace++;
+	}
+      else if(var > 0) //error check this in the _group Scramble function
+	{
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.allStep);
+	  SETFLOAT(&x->var.varStep[destLoc],x->copyVal);
+	  SETFLOAT(&x->var.allStep[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.groupStep);
+	  SETFLOAT(&x->var.groupStep[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.groupNum);
+	  SETFLOAT(&x->var.groupNum[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eSize);
+	  if(x->myBug == 8) post("x->copyVal = %f",x->copyVal);
+	  SETFLOAT(&x->var.eSize[destLoc],x->copyVal);
+	  /*if(x->myBug == 15)
+	    {
+	      post("CHECK COPY VALUES:");
+	      post("varOffset = %d",varOffset);
+	      post("eSize = %f",x->copyVal);
+	      //  for(x->o = 0; x->o < x->seq.len[slot]; x->o++)
+	      //x->offsetVar = x->scramSlot * MAXSEQ + x->thisVar * x->SEQSIZE;
+	      post("scramSlot = %d, thisVar = %d",(varOffset - (x->thisVar * x->SEQSIZE)) / MAXSEQ, (varOffset - (x->scramSlot * MAXSEQ)) / x->SEQSIZE);
+	      post("x->o = %d",x->o);
+	      }
+      if(atom_getfloatarg(destLoc, x->VARSIZE, x->var.eSize) == 0)
+	{
+	  post("Event size must be greater than 0 :-( copyVal = %f",x->copyVal);
+	  x->copyWell = 0;
+	}*/
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eOff);
+	  SETFLOAT(&x->var.eOff[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eJoin);
+	  SETFLOAT(&x->var.eJoin[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.jSize);
+	  SETFLOAT(&x->var.jSize[destLoc],x->copyVal);
+	  /*if(atom_getfloatarg(destLoc, x->VARSIZE, x->var.jSize) == 0)
+	    {
+	      post("Join size must be greater than 0 :-(");
+	      x->copyWell = 0;
+	      }*/
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eSizeInv);
+	  SETFLOAT(&x->var.eSizeInv[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc1);
+	  SETFLOAT(&x->var.eAcc1[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc1);
+	  SETFLOAT(&x->var.pAcc1[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc2);
+	  SETFLOAT(&x->var.eAcc2[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc2);
+	  SETFLOAT(&x->var.pAcc2[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc3);
+	  SETFLOAT(&x->var.eAcc3[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc3);
+	  SETFLOAT(&x->var.pAcc3[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc4);
+	  SETFLOAT(&x->var.eAcc4[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc4);
+	  SETFLOAT(&x->var.pAcc4[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc5);
+	  SETFLOAT(&x->var.eAcc5[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc5);
+	  SETFLOAT(&x->var.pAcc5[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc6);
+	  SETFLOAT(&x->var.eAcc6[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc6);
+	  SETFLOAT(&x->var.pAcc6[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc7);
+	  SETFLOAT(&x->var.eAcc7[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc7);
+	  SETFLOAT(&x->var.pAcc7[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.eAcc8);
+	  SETFLOAT(&x->var.eAcc8[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.pAcc8);
+	  SETFLOAT(&x->var.pAcc8[destLoc],x->copyVal);
+	  x->copyVal = atom_getfloatarg(loc, x->VARSIZE, x->var.denom);
+	  SETFLOAT(&x->var.denom[destLoc],x->copyVal);
+	  x->GSPlace++;
+	}
+      //if(x->myBug == 9) post("varOffset + x->o = %d",varOffset + x->o);//post("d = %f", x->copyVal);
+    }
+  return(x->copyWell);
+}
+
+void polyMath_tilde_groupScramble(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
+// COULD PROBABLY USE REGROUP INSTEAD!!!
+{
+  t_int nGroups, index, numEvents;
+  //args: slot, var, destVar, scramRand, (mode CHANGED BEHAVIOUR)
+  //if mode == 0, just do that percentage of scrambles
+  //if mode == 1, ensure exactly that number of unique displacements is carried out (NOT IMPLEMENTED)
+  //if mode == 2, scramble all of them, ensuring that none end up in the same place (order) as before
+  //defaults:
+  x->GSScramRand = 0.5;
+
+  if(argc == 4)
+    {
+      x->GSSlot = (t_int)atom_getfloat(argv+0);
+      x->GSVar = (t_int)atom_getfloat(argv+1);
+      x->GSDestVar = (t_int)atom_getfloat(argv+2);
+      x->GSScramRand = atom_getfloat(argv+3);
+      x->GSMode = 0;
+    }
+  else if(argc == 3)
+    {
+      x->GSSlot = (t_int)atom_getfloat(argv+0);
+      x->GSVar = (t_int)atom_getfloat(argv+1);
+      x->GSDestVar = (t_int)atom_getfloat(argv+2);
+      //x->GSScramRand = atom_getfloat(argv+3);
+      x->GSMode = 2;
+    }
+  if(argc == 4 || argc == 3)
+    {
+      if(x->GSSlot >= SLOTS || x->GSSlot < 0) post("slot must be a whole number from 0 to %d",SLOTS - 1);
+      else if(x->GSVar < 0 || x->GSVar > VARIATIONS) post("var must bo 0 (no-var) or a whole number from 1 to %d",VARIATIONS);
+      else if(x->GSDestVar < 0 || x->GSDestVar > VARIATIONS) post("dest var must bo 0 (no-var) or a whole number from 1 to %d",VARIATIONS);
+      else if(x->GSScramRand < 0 || x->GSScramRand > 1) post("randomness must be a floating point number from 0 to 1");
+      else if(x->GSVar == x->GSDestVar) post("destination variation must not be the same as source variation");
+      // later on mybe we could make a "scramble-in-place"
+      else
+	{
+	  if(x->GSMode == 0)
+	    {
+	      /*x->randNum1 = drand48();
+		x->fSwapsNum = x->fSeqLen * prob;
+		x->swapsNum = rounder(x,x->fSwapsNum,x->seqLen - 1);	    x->doSwaps = x->swapsNum;*/
+	      if(x->GSVar == 0)
+		{
+		  
+		}
+	      post("groupScramble Mode 0: NOT YET IMPLEMENTED!");
+	    }
+	  else if(x->GSMode == 1)
+	    {
+	      post("groupScramble Mode 1: NOT YET IMPLEMENTED!");
+	    }
+	  else if(x->GSMode == 2)
+	    {
+	      if(x->GSVar > 0) x->swapsNum = nGroups = x->vGrp.nGroups[x->GSSlot + x->GSVar * SLOTS];
+	      else x->swapsNum = nGroups = x->grp.nGroups[x->GSSlot];
+	      x->fSwapsNum = (t_float)x->swapsNum;
+	      for(x->o = 0; x->o < x->swapsNum; x->o++)
+		{
+		  x->vGrp.groupSwaps[x->o] = -1;
+		}
+	      while(nGroups)
+		{
+		  x->o = 0;
+		  x->randNum1 = drand48();
+		  x->randNum2 = drand48();
+		  x->GSFSwap = x->randNum1 * x->fSwapsNum;
+		  x->GSISwap = (t_int)x->GSFSwap;
+		  if(x->o != x->GSISwap)
+		    {
+		      x->vGrp.groupSwaps[x->GSISwap] = x->o;
+		      x->o++;
+		      nGroups--;
+		    }
+		  else if(x->swapsNum == 1 && x->o == x->GSISwap)
+		    {
+		      //kludge? recursion? ignore? ignore!
+		      x->vGrp.groupSwaps[x->GSISwap] = x->o;
+		      //x->o++;
+		      nGroups--;		  
+		    }
+		  /*NEXT:
+		    write a function to rewrite the sequence according to the new group arrangement
+		    t_int gStart[GROUPS * SLOTS * VARIATIONS];        // where in the sequence does each group start?
+		    t_atom n[GROUPS * SLOTS * VARIATIONS];          // numerator of the time sig (fraction)
+		  */
+		}
+	      //  x->E_Acc6 = atom_getfloatarg(x->slot * MAXSEQ + x->varPerf * x->SEQSIZE + x->PStep, x->VARSIZE, x->var.eAcc6);
+	      for(x->o = 0; x->o < x->swapsNum; x->o++)
+		{
+		  x->p = (t_int)x->vGrp.groupSwaps[x->o];
+		  {
+		    //numEvents: slot or var offset + grp offset
+		    if(x->GSVar > 0)
+		      {
+			if(x->GSVar != x->GSDestVar)
+			  {
+			    x->GSPlace = 0;
+			    nGroups = x->vGrp.nGroups[x->GSSlot * VARIATIONS + x->GSVar];
+			    x->scLen = (t_int)atom_getfloatarg(x->GSSlot * VARIATIONS + x->p, x->VGROUPSIZE, x->vGrp.n);
+			    x->scOff = (t_int)atom_getfloatarg(x->GSSlot * VARIATIONS + x->p, x->VGROUPSIZE, x->vGrp.offset);
+  //int copySeqElements(t_polyMath_tilde *x, int slot, int var, int destVar, int groupOffset, int newGroupOffset, int length)
+			    //where do we get newOffset from?
+			    if(x->myBug == 18)
+			      {
+				post("copyElements(x, %d, %d, %d, %d, %d, %d)",x->GSSlot, x->GSVar, x->GSDestVar, x->scOff, x->p, x->scLen);
+			      }
+			    copySeqElements(x, x->GSSlot, x->GSVar, x->GSDestVar, x->scOff, x->p, x->scLen);
+			    //for(x->q = 0; x->q < x->vGrp.d[x->GSSlot * VARIATIONS + x->p]; x->q++)
+			    //{
+			    //int copySeqElements(t_polyMath_tilde *x, int slot, int var, int destVar, int groupOffset, int newGroupOffset, int length)
+			    //   copySeqElements(x, x->GSSlot, x->GSVar, x->GSDestVar, offset, x->p, length);  // what about length?
+			    //}
+			  }
+			else
+			  {
+			    post("destination variation must be different from the source");
+			  }
+		      }									     
+		    else if(x->GSVar == 0)
+		      {
+			if(x->GSDestVar > 0 && x->GSDestVar <= VARIATIONS)
+			  {
+			    nGroups = x->grp.nGroups[x->GSSlot];
+			    x->scLen = (t_int)atom_getfloatarg(x->GSSlot * VARIATIONS + x->p, x->VGROUPSIZE, x->vGrp.n);
+			    x->scOff = (t_int)atom_getfloatarg(x->GSSlot * VARIATIONS + x->p, x->VGROUPSIZE, x->vGrp.offset);
+  //t_int copySeqElements(t_polyMath_tilde *x, t_int slot, t_int var, t_int destVar, t_int groupOffset, t_int newGroupOffset, t_int length)
+			    //where do we get newOffset from?
+			    if(x->myBug == 18)
+			      {
+				post("copyElements(x, %d, %d, %d, %d, %d, %d)",x->GSSlot, x->GSVar, x->GSDestVar, x->scOff, x->p, x->scLen);
+			      }
+			    copySeqElements(x, x->GSSlot, x->GSVar, x->GSDestVar, x->scOff, x->p, x->scLen);
+			  }
+			else
+			  {
+			    post("destination variation out-of-bounds");
+			  }
+		      }
+		  }		
+		}
+	      //t_int scramSuccess = scramGroup(x, x->GSSlot, x->
+	    }
+	}
+    }
+      //else post("Insufficient arguments to groupScramble!");  
+}
+
+t_int regroup(t_polyMath_tilde *x, t_int grpOffset, t_int varOffset, t_int slot, t_int var, t_int len)
 {
   x->groupWell = 1;
   x->VGnm = 0;
@@ -2952,7 +3174,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
   for(x->p = 0; x->p < len; x->p++)
     {
       //here is where we rewrite GROUPS
-      //int VGnm, VGCount, VEJoin;
+      //t_int VGnm, VGCount, VEJoin;
       //t_float Vd, VESize, VGSize, VEOff, VGOff, VJSize, VJoin, VVStep, VVLast, VONext;
       x->VESize = atom_getfloatarg(varOffset + x->p, x->VARSIZE, x->var.eSize);
       //x->VJSize = atom_getfloatarg(varOffset + x->p, x->VARSIZE, x->var.jSize);
@@ -2974,7 +3196,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
 	    }
 	  SETFLOAT(&x->vGrp.n[grpOffset],(t_float)x->VGCount + 1);
 	  SETFLOAT(&x->vGrp.d[grpOffset],x->Vd);
-	  x->vGrp.gStart[grpOffset] = (int)x->VVStep;
+	  x->vGrp.gStart[grpOffset] = (t_int)x->VVStep;
 	  x->vGrp.nGroups[slot + var * SLOTS] = 1; //x->VGnm + 1
 	  x->VONext = x->VEOff + x->VESize;
 	  SETFLOAT(&x->var.groupStep[varOffset],0);
@@ -2994,7 +3216,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
 	      x->VGOff = x->VEOff;
 	      SETFLOAT(&x->vGrp.n[grpOffset + x->VGnm],(t_float)x->VGCount + 1);
 	      SETFLOAT(&x->vGrp.d[grpOffset + x->VGnm],x->Vd);
-	      x->vGrp.gStart[grpOffset + x->VGnm] = (int)x->VVStep;
+	      x->vGrp.gStart[grpOffset + x->VGnm] = (t_int)x->VVStep;
 	      x->vGrp.nGroups[slot + var * SLOTS] = x->VGnm + 1;
 	    }
 	  else if(x->VVStep != x->VVLast + 1)
@@ -3007,7 +3229,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
 	      x->VGOff = x->VEOff;
 	      SETFLOAT(&x->vGrp.n[grpOffset + x->VGnm],(t_float)x->VGCount + 1);
 	      SETFLOAT(&x->vGrp.d[grpOffset + x->VGnm],x->Vd);
-	      x->vGrp.gStart[grpOffset + x->VGnm] = (int)x->VVStep;
+	      x->vGrp.gStart[grpOffset + x->VGnm] = (t_int)x->VVStep;
 	      x->vGrp.nGroups[slot + var * SLOTS] = x->VGnm + 1;
 	    }
 	  else if(x->VLastD != x->Vd)
@@ -3020,7 +3242,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
 	      x->VGOff = x->VEOff;
 	      SETFLOAT(&x->vGrp.n[grpOffset + x->VGnm],(t_float)x->VGCount + 1);
 	      SETFLOAT(&x->vGrp.d[grpOffset + x->VGnm],x->Vd);
-	      x->vGrp.gStart[grpOffset + x->VGnm] = (int)x->VVStep;
+	      x->vGrp.gStart[grpOffset + x->VGnm] = (t_int)x->VVStep;
 	      x->vGrp.nGroups[slot + var * SLOTS] = x->VGnm + 1;
 	    }
 	  else 
@@ -3045,7 +3267,7 @@ int regroup(t_polyMath_tilde *x, int grpOffset, int varOffset, int slot, int var
   return(x->groupWell);
 }
 
-int varOffsets(t_polyMath_tilde *x, int varOffset, int len)
+t_int varOffsets(t_polyMath_tilde *x, t_int varOffset, t_int len)
 {
   x->varWrite = 1;
   x->varOff = 0;
@@ -3053,7 +3275,7 @@ int varOffsets(t_polyMath_tilde *x, int varOffset, int len)
   for(x->p = 0; x->p < len; x->p++)
     {
       SETFLOAT(&x->var.varOff[varOffset + x->p], x->varOff);
-      x->swapVal1 = (int)atom_getfloatarg(varOffset + x->p, x->VARSIZE, x->var.groupStep);
+      x->swapVal1 = (t_int)atom_getfloatarg(varOffset + x->p, x->VARSIZE, x->var.groupStep);
       if(x->swapVal1 == 0) x->swapVal = x->varOff;
       SETFLOAT(&x->var.grpOff[varOffset + x->p], x->swapVal);
       x->varOff += atom_getfloatarg(varOffset + x->p, x->VARSIZE, x->var.eSize);
@@ -3062,9 +3284,9 @@ int varOffsets(t_polyMath_tilde *x, int varOffset, int len)
   return(x->varWrite);
 }
 
-//int scramLen, scramMeth // scramMeth: 0 = no repeats, 1 = allow repeats
+//t_int scramLen, scramMeth // scramMeth: 0 = no repeats, 1 = allow repeats
 //reverting to clockSeg~ working scramble routine as the new one isn't working
-int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len, t_float prob, int grpOffset)
+t_int scrambleSwaps(t_polyMath_tilde *x, t_int slot, t_int varOffset, t_int var, t_int len, t_float prob, t_int grpOffset)
 {
   x->swapWell = 1;
   x->seqLen = x->var.len[slot + var * SLOTS];
@@ -3097,7 +3319,7 @@ int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len
       x->fSwapsNum = x->fSeqLen * prob;
       x->swapsNum = rounder(x,x->fSwapsNum,x->seqLen - 1);
       x->doSwaps = x->swapsNum;
-      //x->doSwaps = x->swapsNum = (int)x->fSwapsNum;
+      //x->doSwaps = x->swapsNum = (t_int)x->fSwapsNum;
       //if(x->fSwapsNum > (t_float)x->swapsNum && x->fSeqLen > x->fSwapsNum) x->extraSwapFlag = 1;
       //else x->extraSwapFlag = 0;
       x->r = 0;
@@ -3108,8 +3330,8 @@ int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len
 	    {
 	      x->randNum2 = drand48();
 	      x->randNum3 = drand48();
-	      x->swapVal1 = (int)((t_float)x->randNum2 * x->fSeqLen);
-	      x->swapVal2 = (int)((t_float)x->randNum3 * x->fSeqLen);
+	      x->swapVal1 = (t_int)((t_float)x->randNum2 * x->fSeqLen);
+	      x->swapVal2 = (t_int)((t_float)x->randNum3 * x->fSeqLen);
 	      // May 30th 2021 - what is the > (MAXSEQ * -1) for? Can we get rid of it? does x->scramMeth refer to repeats?
 	      if(x->swapVal1 != x->swapVal2 && x->vGrp.swapped[x->swapVal1] == 0 && x->vGrp.swapped[x->swapVal2] == 0 && x->vGrp.swaps[x->swapVal1])// > (MAXSEQ * -1) && x->vGrp.swaps[x->swapVal2] > (MAXSEQ * -1))
 		{
@@ -3153,7 +3375,7 @@ int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len
   return(x->swapWell);
 }
 //here is the newer version:
-/*int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len, t_float prob, int grpOffset)
+/*t_int scrambleSwaps(t_polyMath_tilde *x, t_int slot, t_int varOffset, t_int var, t_int len, t_float prob, t_int grpOffset)
 {
   x->swapWell = 1;
   x->seqLen = x->var.len[slot + var * SLOTS];
@@ -3184,7 +3406,7 @@ int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len
   x->fSwapsNum = x->fSeqLen * prob;
   x->swapsNum = rounder(x,x->fSwapsNum,x->seqLen - 1);
   x->doSwaps = x->swapsNum;
-  //x->doSwaps = x->swapsNum = (int)x->fSwapsNum;
+  //x->doSwaps = x->swapsNum = (t_int)x->fSwapsNum;
   //if(x->fSwapsNum > (t_float)x->swapsNum && x->fSeqLen > x->fSwapsNum) x->extraSwapFlag = 1;
   //else x->extraSwapFlag = 0;
   x->r = 0;
@@ -3194,8 +3416,8 @@ int scrambleSwaps(t_polyMath_tilde *x, int slot, int varOffset, int var, int len
     {
       x->randNum2 = drand48();
       x->randNum3 = drand48();
-      x->swapVal1 = (int)((t_float)x->randNum2 * x->fSeqLen);
-      x->swapVal2 = (int)((t_float)x->randNum3 * x->fSeqLen);
+      x->swapVal1 = (t_int)((t_float)x->randNum2 * x->fSeqLen);
+      x->swapVal2 = (t_int)((t_float)x->randNum3 * x->fSeqLen);
       if(x->scramMeth == 0)
 	{
 	  if(x->swapVal1 != x->swapVal2 && x->vGrp.swapped[x->swapVal1] == 0 && x->vGrp.swapped[x->swapVal2] == 0 && x->vGrp.swaps[x->swapVal1] > (MAXSEQ * -1) && x->vGrp.swaps[x->swapVal2] > (MAXSEQ * -1))
@@ -3282,7 +3504,7 @@ void polyMath_tilde_noRepeats(t_polyMath_tilde *x, t_floatarg f)
   x->noRepeats = f !=0 ? 1 : 0;
 }
 
-void polyMath_tilde_scramble(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_scramble(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc < 1 && argc > 3)
     {
@@ -3292,9 +3514,9 @@ void polyMath_tilde_scramble(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
     {
       if(argc == 3)
 	{
-	  x->scramSlot = (int)atom_getfloat(argv);
+	  x->scramSlot = (t_int)atom_getfloat(argv);
 	  x->scramSlot = x->scramSlot < 0 ? 0 : x->scramSlot >= SLOTS ?  SLOTS - 1 : x->scramSlot;
-	  x->variation = (int)atom_getfloat(argv+1);
+	  x->variation = (t_int)atom_getfloat(argv+1);
 	  x->variation = x->variation < 0 ? 0 : x->variation > VARIATIONS ? VARIATIONS : x->variation;
 	  x->seqProb = atom_getfloat(argv+2);
 	  x->seqProb = x->seqProb < 0 ? 0 : x->seqProb > 1 ? 1 : x->seqProb;
@@ -3309,8 +3531,8 @@ void polyMath_tilde_scramble(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
       else if(argc == 2)
 	{
 	  x->scramSlot = x->slot;
-	  x->variation = (int)atom_getfloat(argv);
-	  x->variation = x->variation < 0 ? 0 : x->variation > VARIATIONS ? VARIATIONS : x->variation;
+	  x->variation = (t_int)atom_getfloat(argv);
+	  x->variation = x->variation < 0 ? 0 : x->variation >= VARIATIONS ? VARIATIONS - 1 : x->variation;
 	  x->seqProb = atom_getfloat(argv+1);
 	  x->seqProb = x->seqProb < 0 ? 0 : x->seqProb > 1 ? 1 : x->seqProb;
 	  x->seqProb *= 0.5;
@@ -3405,7 +3627,7 @@ void polyMath_tilde_preChange(t_polyMath_tilde *x, t_floatarg f) // note that th
 }
 
 // JOINED ELEMENTS
-void polyMath_tilde_makeJoin(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_makeJoin(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   x->joinSuccess = 0;
   // argv: slot, group, location, length - not yet: (, location2, length2 (, location3, length3 etc))
@@ -3429,19 +3651,19 @@ void polyMath_tilde_makeJoin(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
       /* 00:51am 31/10/2017 */
       
       //x->JSlot is an INT
-      x->JSlot = (int)atom_getfloat(argv);
+      x->JSlot = (t_int)atom_getfloat(argv);
       // here we switch to affermative consequences of if statements:
       if(x->JSlot >= 0 && x->JSlot < SLOTS)
 	{
-	  //JGrp is an INT
-	  x->JGrp = (int)atom_getfloat(argv+1);
+	  //JGrp is an T_INT
+	  x->JGrp = (t_int)atom_getfloat(argv+1);
 	  //back to negative consequences:
 	  if(x->JGrp >= x->grp.nGroups[x->JSlot] || x->JGrp < 0) post("makeJoin: group must exist in sequence");
 	  else
 	    {
-	      x->JLoc = (int)atom_getfloat(argv+2);
-	      x->JLen = (int)atom_getfloat(argv+3);
-	      x->JGnm = (int)atom_getfloatarg(x->JGrp + GROUPS * x->JSlot, GROUPS * SLOTS, x->grp.n);
+	      x->JLoc = (t_int)atom_getfloat(argv+2);
+	      x->JLen = (t_int)atom_getfloat(argv+3);
+	      x->JGnm = (t_int)atom_getfloatarg(x->JGrp + GROUPS * x->JSlot, GROUPS * SLOTS, x->grp.n);
 	      if(x->myBug == 7) post("JSlot = %d, JGrp = %d, JLoc = %d, JLen = %d, JGnm = %d",x->JSlot,x->JGrp,x->JLoc,x->JLen,x->JGnm);
 	      if(x->myBug == 6) post("JLoc = %d, JLen = %d, JGnm = %d",x->JLoc,x->JLen,x->JGnm);
 	      if(x->JLoc >= x->JGnm)
@@ -3498,7 +3720,7 @@ void polyMath_tilde_makeJoin(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
       // clean the group!
       for(x->k = 0; x->k < x->JGn; x->k++)
 	{
-	  x->JLen = (int)atom_getfloatarg(x->k + x->JSlot * MAXSEQ, x->SEQSIZE, x->seq.eJoin);
+	  x->JLen = (t_int)atom_getfloatarg(x->k + x->JSlot * MAXSEQ, x->SEQSIZE, x->seq.eJoin);
 	  if(x->JLen > 1)
 	    {
 	      for(x->j = 1; x->j < x->JLen; x->j++) SETFLOAT(&x->seq.eJoin[x->j + x->k + x->JSlot * MAXSEQ],1);
@@ -3511,15 +3733,15 @@ void polyMath_tilde_makeJoin(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom 
 }
 
 //This one doesn't work yet
-void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc > 2)
     {
-      x->JSlot = (int)atom_getfloat(argv);
+      x->JSlot = (t_int)atom_getfloat(argv);
       if(x->JSlot < 0 || x->JSlot > 127) post("ERROR: slot must be an integer from 0 to 127!");
       else
 	{
-	  x->JGrp = (int)atom_getfloat(argv+1);
+	  x->JGrp = (t_int)atom_getfloat(argv+1);
 	  if(x->grp.nGroups[x->JSlot] <= x->JGrp) post("ERROR: group must already exist in sequence!");
 	  else
 	    {
@@ -3527,16 +3749,16 @@ void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *
 	      x->GroupStart = x->grp.gStart[x->JGrp];
 	      x->JGd = atom_getfloatarg(x->JSlot * GROUPS + x->GroupStart, x->GROUPSIZE, x->grp.d);
 	      x->JGn = atom_getfloatarg(x->JSlot * GROUPS + x->GroupStart, x->GROUPSIZE, x->grp.n);
-	      x->JGnm = (int)x->JGn;
+	      x->JGnm = (t_int)x->JGn;
 	      x->JESize = x->JGn / x->JGd;
-	      x->JoinTot = 0;
+	      x->Jointot = 0;
 	      for(x->g = 0; x->g < argc - 2; x->g++)
 		{
-		  x->JoinTot += (int)atom_getfloat(argv + 2 + x->g);
+		  x->Jointot += (t_int)atom_getfloat(argv + 2 + x->g);
 		}
-	      if(x->myBug == 6) post("JoinTot = %d, JGn = %d, GroupStart = %d",x->JoinTot,(int)x->JGn,x->GroupStart);
+	      if(x->myBug == 6) post("Jointot = %d, JGn = %d, GroupStart = %d",x->Jointot,(t_int)x->JGn,x->GroupStart);
 	      x->JGn = atom_getfloatarg(x->JSlot * GROUPS + x->GroupStart, x->GROUPSIZE, x->grp.n);
-	      if(x->JoinTot != (int)x->JGn)
+	      if(x->Jointot != (t_int)x->JGn)
 		{
 		  post("ERROR: Joins total is not equal to numerator!");
 		  if(x->myBug == 6)
@@ -3553,7 +3775,7 @@ void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *
 		  x->g = 0;
 		  for(x->k = 0; x->k < argc - 2;x->k++)
 		    {
-  		      /*while(x->JoinTot > 0)
+  		      /*while(x->Jointot > 0)
 			{ */
 		      if(x->myBug == 6) post("Into the while() statements!");
 		      x->JJoin = atom_getfloat(argv + 2 + x->g);
@@ -3565,7 +3787,7 @@ void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *
 			  //SETFLOAT(&x->seq.eSize[x->JSlot * MAXSEQ + x->GroupStart + x->g],x->JJoin * x->JESize);
 			  //SETFLOAT(&x->seq.eSizeInv[x->JSlot * MAXSEQ + x->GroupStart + x->g],1/(x->JJoin * x->JESize));
 			  // at this point it will be necessary to re-write the rest of the sequence
-			  x->JoinTot -= (int)x->JJoin;
+			  x->Jointot -= (t_int)x->JJoin;
 			  x->JGt += x->JJoin - 1;
 			  if(x->JJoin > 1)
 			    x->RW = reWriteSeq(x); // get x->JJoin and x->Gstp in reWriteGroups(x)
@@ -3576,7 +3798,7 @@ void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *
 		  for(x->k = x->JGrp + 1; x->k < x->grp.nGroups[x->JSlot]; x->k++)
 		    {
 		      // reWrite the array in t_groups for gStart
-		      x->JGstt = x->grp.gStart[x->JSlot * GROUPS + x->k] - (int)x->JGt;
+		      x->JGstt = x->grp.gStart[x->JSlot * GROUPS + x->k] - (t_int)x->JGt;
 		      x->grp.gStart[x->JSlot * GROUPS + x->k] = x->JGstt;
 		    }
 		}
@@ -3589,7 +3811,7 @@ void polyMath_tilde_joinSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *
 
 void polyMath_tilde_initSlot(t_polyMath_tilde *x, t_floatarg f)
 {
-  x->initSlot = f < 0 ? 0 : f > 127 ? 127 : (int)f;  
+  x->initSlot = f < 0 ? 0 : f > 127 ? 127 : (t_int)f;  
   x->grp.nGroups[x->initSlot] = 0;
   x->grp.cycles[x->initSlot] = 1;
   for(x->l = 0; x->l < GROUPS; x->l++)
@@ -3641,7 +3863,7 @@ void polyMath_tilde_altOut(t_polyMath_tilde *x, t_floatarg f)
   x->altOut = f != 0 ? 1 : 0;
   if(f > 0 && f < 9)
     {
-      x->altLen = (int)f;
+      x->altLen = (t_int)f;
     }
 }
 
@@ -3751,7 +3973,7 @@ void polyMath_tilde_init(t_polyMath_tilde *x, t_symbol *s)
   x->barNew = 0;
 }
 
-void polyMath_tilde_getSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *argv)
+void polyMath_tilde_getSeq(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
   if(argc == 3)
     {
@@ -4351,7 +4573,7 @@ void polyMath_tilde_getSeq(t_polyMath_tilde *x, t_symbol *s, int argc, t_atom *a
 // DEBUG CODE
 void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
 {
-  int bug = (int)myBug;
+  t_int bug = (t_int)myBug;
   t_float val = 0; t_float val2 = 0;
   x->myBug = bug;
   if(bug == 1)
@@ -4420,7 +4642,7 @@ void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
 	{
 	  val = atom_getfloatarg(x->slot * MAXSEQ + x->h, x->SEQSIZE, x->seq.eJoin);
 	  val2 = atom_getfloatarg(x->slot * MAXSEQ + x->h, x->SEQSIZE, x->seq.groupStep);
-	  post("join at %d, groupStep = %d, length = %d",x->h, (int)val2, (int)val);
+	  post("join at %d, groupStep = %d, length = %d",x->h, (t_int)val2, (t_int)val);
 	}
       post("seq.len[slot] = %d",x->seq.len[x->slot]);
       post("grp.nGroups[slot] = %d",x->grp.nGroups[x->slot]);
@@ -4431,11 +4653,11 @@ void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
       x->myBug = 8;
       for(x->q = 0; x->q < x->var.len[x->scramSlot + x->thisVar * SLOTS]; x->q++)
 	{
-	  post("eSize = %f, eOff = %f, eJoin = %d, groupStep = %d, denom = %d, varOff = %f",atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eSize),atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eOff),(int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eJoin),(int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.groupStep),(int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.denom),atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.varOff));
+	  post("eSize = %f, eOff = %f, eJoin = %d, groupStep = %d, denom = %d, varOff = %f",atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eSize),atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eOff),(t_int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.eJoin),(t_int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.groupStep),(t_int)atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.denom),atom_getfloatarg(x->offsetVar + x->q,x->VARSIZE,x->var.varOff));
 	}
       for(x->p = 0; x->p < x->seq.len[x->scramSlot]; x->p++)
 	{
-	  post("Denominator = %d",(int)atom_getfloatarg(x->scramSlot * MAXSEQ, x->VARSIZE, x->var.denom));
+	  post("Denominator = %d",(t_int)atom_getfloatarg(x->scramSlot * MAXSEQ, x->VARSIZE, x->var.denom));
 	}
     }
   else if(bug == 9)
@@ -4444,7 +4666,7 @@ void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
       post("x->slot = %d, x->varPerf = %d, ENTRIES:",x->slot,x->varPerf);
       for(x->q = 0; x->q < x->var.len[x->slot + x->varPerf * SLOTS]; x->q++)
 	{
-	  post("eSize = %f, eOff = %f, eJoin = %d, groupNum = %d, groupStep = %d, denom = %d",atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eSize),atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eOff),(int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eJoin),(int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.groupNum),(int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.groupStep),(int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.denom));
+	  post("eSize = %f, eOff = %f, eJoin = %d, groupNum = %d, groupStep = %d, denom = %d",atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eSize),atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eOff),(t_int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.eJoin),(t_int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.groupNum),(t_int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.groupStep),(t_int)atom_getfloatarg(x->varPerf * x->SEQSIZE + x->slot * MAXSEQ + x->q,x->VARSIZE,x->var.denom));
 	}
     }
   else if(bug == 10)
@@ -4497,17 +4719,34 @@ void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
     }
   else if(bug == 16)
     {
+      int testBug = x->slot * MAXSEQ;
+      int testBack = 0;
+      post("x->slot = %d, offset = %d", x->slot, testBug);
       for(x->o = 0; x->o < x->seq.len[x->slot]; x->o++)
 	{
-	  if(x->o < 10) post("index:  %d| p1 %d | e1 %d | p2 %d | e2 %d | p3 %d | e3 %d | p4 %d | e4 %d",x->o,(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc1),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc1),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc2),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc2),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc3),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc3),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc4),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc4));
+	  if(x->o < 10) post("index:  %d| p1 %d | e1 %d | p2 %d | e2 %d | p3 %d | e3 %d | p4 %d | e4 %d",x->o,(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.pAcc1),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.eAcc1),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.pAcc2),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.eAcc2),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.pAcc3),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.eAcc3),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.pAcc4),(t_int)atom_getfloatarg(testBug + x->o, x->SEQSIZE, x->seq.eAcc4));
+	}
+      if(x->slot > 0)
+	{
+	  testBack = (x->slot - 1) * MAXSEQ;
+	  post("-------------x->slot - 1");
+
+	  for(x->o = 0; x->o < x->seq.len[x->slot - 1]; x->o++)
+	    {
+	      post("index:  %d| p1 %d | e1 %d | p2 %d | e2 %d | p3 %d | e3 %d | p4 %d | e4 %d",x->o,(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.pAcc1),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.eAcc1),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.pAcc2),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.eAcc2),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.pAcc3),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.eAcc3),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.pAcc4),(t_int)atom_getfloatarg(testBack + x->o, x->SEQSIZE, x->seq.eAcc4));
+	    }
 	}
     }
   else if(bug == 17)
     {
       for(x->o = 0; x->o < x->seq.len[x->slot]; x->o++)
 	{
-	  if(x->o < 10) post("index:  %d| p5 %d | e5 %d | p6 %d | e6 %d | p7 %d | e7 %d | p8 %d | e8 %d",x->o,(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc5),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc5),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc6),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc6),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc7),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc7),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc8),(int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc8));
+	  if(x->o < 10) post("index:  %d| p5 %d | e5 %d | p6 %d | e6 %d | p7 %d | e7 %d | p8 %d | e8 %d",x->o,(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc5),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc5),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc6),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc6),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc7),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc7),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.pAcc8),(t_int)atom_getfloatarg(x->slot * MAXSEQ + x->o, x->SEQSIZE, x->seq.eAcc8));
 	}
+    }
+  else if(bug == 18)
+    {
+      x->myBug = 18;
     }
 }
 
@@ -4540,7 +4779,7 @@ static void checkJoinsOut(t_polyMath_tilde *x)
       else
 	{
 	  x->jFirst = 1;
-	  x->JoinVal = (int)x->PJoin;
+	  x->JoinVal = (t_int)x->PJoin;
 	  x->PJoined = x->JoinVal;
 	  x->JESize = x->PESize * x->PJoin;
 	  x->JPESI = x->PESInv / x->PJoin;
@@ -4579,7 +4818,7 @@ static void checkJoinsVarOut(t_polyMath_tilde *x)
 	{
 	  x->eChanged = 0;
 	  x->jFirst = 1;
-	  x->JoinVal = (int)x->PJoin;
+	  x->JoinVal = (t_int)x->PJoin;
 	  x->PJoined = x->JoinVal;
 	  x->JESize = x->PESize * x->PJoin;
 	  x->VPESI = 1 / x->JESize; // perhaps it's time to use the jSize array in var?
@@ -4677,7 +4916,7 @@ t_int *polyMath_tilde_perform(t_int *w)
 		  getVariations(x);
 		  checkJoinsOut(x);
 		}
-	      else if((int)x->PGcyc < x->grp.cycles[x->slot] - 1)
+	      else if((t_int)x->PGcyc < x->grp.cycles[x->slot] - 1)
 		{
 		  x->PGcyc++;
 		  if(x->changeSlot == 1)
@@ -5040,9 +5279,9 @@ t_int *polyMath_tilde_perform(t_int *w)
 	}
       *offset++ = x->PEOff;
       x->PreVal = x->InVal;
-      if((int)x->TotVal != x->pageNum)
+      if((t_int)x->TotVal != x->pageNum)
 	{
-	  x->pageNum = (int)x->TotVal;
+	  x->pageNum = (t_int)x->TotVal;
 	  clock_delay(x->pageTurner, 0L);
 	}
     }
