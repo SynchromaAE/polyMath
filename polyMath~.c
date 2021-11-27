@@ -27,22 +27,22 @@
  * 4     --- eJoin (is the event joined to the next event) - not fully implemented yet
  * 5     --- jSize (length of the join - this could be eliminated if eJoin was jSize)
  *
- * 11    --- pAcc1
- * 12    --- eAcc1
- * 13    --- pAcc2
- * 14    --- eAcc2
- * 15    --- pAcc3
- * 16    --- eAcc3
- * 17    --- pAcc4
- * 18    --- eAcc4
- * 19    --- pAcc5
- * 20    --- eAcc5
- * 21    --- pAcc6
- * 22    --- eAcc6
- * 23    --- pAcc7
- * 24    --- eAcc7
- * 25    --- pAcc8
- * 26    --- eAcc8
+ * 11    --- pAcc1 array
+ * 12    --- eAcc1 array
+ * 13    --- pAcc2 array
+ * 14    --- eAcc2 array
+ * 15    --- pAcc3 array
+ * 16    --- eAcc3 array
+ * 17    --- pAcc4 array
+ * 18    --- eAcc4 array
+ * 19    --- pAcc5 array
+ * 20    --- eAcc5 array
+ * 21    --- pAcc6 array
+ * 22    --- eAcc6 array
+ * 23    --- pAcc7 array
+ * 24    --- eAcc7 array
+ * 25    --- pAcc8 array
+ * 26    --- eAcc8 array
  * group values:
  * 91    --- {gType, nGroups, cycles, len, remains, 0}
  * 92    --- group numerators
@@ -58,7 +58,8 @@
  * and gType 1 fractional (e.g. 1/5.33333). gType 1 would mostly be 1/something e.g.
  * {1/3.25, 1/2.18, 1/4.28096} adds up to 1
  * sequence lengths that are not equal to an integer number of phase cycles will
- * be dealt with in the grand (external to this object) structure using the isobars object. 
+ * be dealt with in the grand (external to this object) structure using the isoWrap~ object
+ * to drive this object (see demo). 
  */
 
 #ifdef __APPLE__
@@ -77,20 +78,15 @@ static t_class *polyMath_tilde_class;
 
 typedef struct drand48_data *randomize;
 
-typedef struct {
-  long tv_sec;
-  long tv_usec;
-} timeval;
-
 typedef struct _groups
 {
-  t_int gType[SLOTS];                  // NEW (and as yet undefined at 1 Dec 2018) tuples (gType = 0) or
+  t_int gType[SLOTS];                // NEW (and as yet undefined at 1 Dec 2018) tuples (gType = 0) or
                                      // linear phase (gType = 1)
-  t_int nGroups[SLOTS];                // number of groups in this sequence
-  t_int gStart[GROUPS * SLOTS];        // where in the sequence does each group start?
+  t_int nGroups[SLOTS];              // number of groups in this sequence
+  t_int gStart[GROUPS * SLOTS];      // where in the sequence does each group start?
   t_atom n[GROUPS * SLOTS];          // numerator of the time sig (fraction)
   t_atom d[GROUPS * SLOTS];          // denominator of the time sig
-  t_int cycles[SLOTS];                 // number of cycles of phasor~
+  t_int cycles[SLOTS];               // number of cycles of phasor~
   t_atom offset[GROUPS * SLOTS];     // group offset in phase
   t_atom size[GROUPS * SLOTS];       // group size in phase
   t_atom sizeInv[GROUPS * SLOTS];    // 1 / size - so that look-up table can be used instead of math at runtime
@@ -98,8 +94,8 @@ typedef struct _groups
   t_atom remains[GROUPS * SLOTS];    // how much of the phase is left (in case of a 0 entry - skip one and if still 0 use remainder)
                                      // also, if an incomplete list is issued, the last value will be based on this!
                                      // THIS IS NOT WELL DEFINED IN THE CODE AS OF 17th December 2017
-  t_int fillGroup[SLOTS];              // if a fill group is used for an incomplete setGroups call, the index will be stored here
-  t_int isUnFilled[SLOTS];               // when the slots are uninitialized it is a 1
+  t_int fillGroup[SLOTS];            // if a fill group is used for an incomplete setGroups call, the index will be stored here
+  t_int isUnFilled[SLOTS];           // when the slots are uninitialized it is a 1
 } t_groups;                         
 
 typedef struct _vars
@@ -128,7 +124,7 @@ typedef struct _variations
 {
   t_int len[SLOTS * VARIATIONS];                   // how many events are in the current sequence
   t_int variations[SLOTS * VARIATIONS];
-  t_int nGroups[SLOTS * VARIATIONS]; // DO WE NEED THIS? is it not in _vars? where is it used?
+  t_int nGroups[SLOTS * VARIATIONS];
   t_int excludes[SLOTS * VARIATIONS * MAXSEQ]; // where a join has been implemented, these should not be available to scramble-NOT YET IMPLEMENTED
   t_atom varStep[MAXSEQ * SLOTS * VARIATIONS];
   t_atom allStep[MAXSEQ * SLOTS * VARIATIONS];
@@ -172,7 +168,7 @@ typedef struct _variations
 } t_variations;
 
 typedef struct _sequences
-{//allStep filled groupStep groupNum eSize eOff eJoin jSize eAcc1-8 pAcc1-8 eSizeInv denom altOff
+{
   t_int len[SLOTS];                   // how many events are in the current sequence
   t_atom allStep[MAXSEQ * SLOTS];   // which event of the total sequence is this?
   //NEW FOR seqInSlot, Jan 2019
@@ -204,7 +200,7 @@ typedef struct _sequences
   t_atom denom[MAXSEQ * SLOTS];
 
   //new for 2019
-  t_atom altOff[MAXSEQ * SLOTS];      // alternative event offset in phase
+  t_atom altOff[MAXSEQ * SLOTS];    // alternative event offset in phase
 
   t_atom eAcc5[MAXSEQ * SLOTS];     // accent or parameter storage for event
   t_atom eAcc6[MAXSEQ * SLOTS];     // accent or parameter storage for event
@@ -1855,6 +1851,10 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, t_int argc, 
 	  x->GSize = 0;
 	  x->WESize = 1 / x->Gd;
 	  x->WSInv = 1 / x->WESize;
+	  if(x->myBug == 19)
+	    {
+	      post("groupOffset = %d, slotOffset = %d", groupOffset, slotOffset);
+	    }
 	  //post("WESize = %f, WSI = %f",x->WESize,x->WSInv);
 	  //for(x->s; x->s < x->s + (t_int)x->Gn; x->s++)
 	  for(x->s = 0;x->s < (t_int)x->Gn; x->s++)
@@ -1878,6 +1878,10 @@ void polyMath_tilde_groupThisSlot(t_polyMath_tilde *x, t_symbol *s, t_int argc, 
 	      else post("You can't have size <= 0 - Gn = %d, Gd = %d",(t_int)x->Gn,(t_int)x->Gd);
 	    }
 	  mark += x->s;
+	  if(x->myBug == 19)
+	    {
+	      post("slotOffset + mark + x->s = %d, Gn = %f, Gd = %f", slotOffset + mark + x->s, x->Gn, x->Gd);
+	    }
 	  SETFLOAT(&x->grp.offset[groupOffset + x->r],x->Goff);
 	  SETFLOAT(&x->grp.size[groupOffset + x->r],x->GSize);
 	  SETFLOAT(&x->grp.sizeInv[groupOffset + x->r],1 / x->GSize);
@@ -2051,7 +2055,7 @@ void polyMath_tilde_setGroups(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_at
 
 void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *argv)
 {
-  if(argc == 5) // Pslot, step, (p1/2/3/4), pNum, pVal
+  if(argc == 5) // Pslot, step, (p1/2/3/4/5/6/7/8), pNum, pVal
     {
       x->PSlot = (t_int)atom_getfloat(argv);
       x->Pac = (t_int)atom_getfloat(argv+2);
@@ -2062,8 +2066,8 @@ void polyMath_tilde_setP(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_atom *a
 	  x->PLStep = x->PLStep >= MAXSEQ ? MAXSEQ - 1 : x->PLStep < 0 ? 0 : x->PLStep;
 	  if(x->myBug > 0)
 	    {
-	      post("x->Location = %d",x->PLStep + x->PSlot * MAXSEQ);
-	      post("x->PSlot = %d",x->PSlot);
+	      post("x->Location = %d, PLStep = %d, PSlot = %d", x->PLStep + x->PSlot * MAXSEQ, x->PLStep, x->PSlot);
+	      post("x->PSlot = %d", x->PSlot);
 	    }
 	  SETFLOAT(&x->seq.pAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+3));
 	  SETFLOAT(&x->seq.eAcc1[x->PLStep + x->PSlot * MAXSEQ],atom_getfloat(argv+4));
@@ -4747,6 +4751,10 @@ void polyMath_tilde_debug(t_polyMath_tilde *x, t_floatarg myBug)
   else if(bug == 18)
     {
       x->myBug = 18;
+    }
+  else if(bug == 19)
+    {
+      x->myBug = 19;
     }
 }
 

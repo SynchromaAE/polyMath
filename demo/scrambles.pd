@@ -1,0 +1,136 @@
+#N canvas 3 89 450 567 10;
+#X obj 29 15 cnv 15 380 260 empty empty Scrambling_Sequences 20 12
+1 14 -204800 -13330 0;
+#X obj 42 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 44 70 cnv 16 16 16 empty empty S 3 9 1 14 -262144 -66577 0;
+#X obj 29 232 cnv 15 380 76 empty empty empty 20 12 0 14 -203904 -66577
+0;
+#X obj 29 309 cnv 15 380 54 empty empty empty 20 12 0 14 -261234 -66577
+0;
+#X text 38 36 Each sequence of events has a number of variations attached
+to it.;
+#X obj 62 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 64 70 cnv 16 16 16 empty empty V1 2 9 1 10 -262144 -66577 0
+;
+#X obj 82 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 84 70 cnv 16 16 16 empty empty V2 1 9 1 10 -262144 -66577 0
+;
+#X obj 102 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 104 70 cnv 16 16 16 empty empty V3 1 9 1 10 -262144 -66577 0
+;
+#X obj 122 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 124 70 cnv 16 16 16 empty empty V4 1 9 1 10 -262144 -66577 0
+;
+#X obj 142 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 144 70 cnv 16 16 16 empty empty V5 1 9 1 10 -262144 -66577 0
+;
+#X obj 162 68 cnv 20 20 20 empty empty empty 20 12 0 14 -1 -66577 0
+;
+#X obj 164 70 cnv 16 16 16 empty empty V6 1 9 1 10 -262144 -66577 0
+;
+#X text 39 90 You can scramble (re-order) a sequence with a message
+like:;
+#X text 53 235 You can now;
+#X text 56 129 [scramble 1;
+#X text 116 141 ^;
+#X text 116 146 |;
+#X text 116 156 |;
+#X text 116 186 |;
+#X text 111 200 slot;
+#X text 77 213 (original sequence);
+#X text 116 166 |;
+#X text 116 176 |;
+#X text 136 141 ^;
+#X text 136 146 |;
+#X text 136 156 |;
+#X text 136 166 |;
+#X text 135 179 variation;
+#X text 166 141 ^;
+#X text 166 146 |;
+#X text 157 160 scramble amount (0 to 1 float);
+#X text 166 129 0.7(;
+#X text 143 252 instantly \, or...;
+#X text 186 271 at the end of the "bar";
+#X obj 42 486 outlet;
+#X text 136 129 4;
+#X msg 42 109 scramble 1 4 0.7;
+#X msg 73 252 jumpTo 1 4;
+#X msg 103 272 jumpNext 1 4;
+#X text 121 290 navigate to slot 1 \, variation 4;
+#X obj 109 380 hradio 15 1 0 11 empty \$0-slot-set slot 0 -8 1 10 -262144
+-1 -1 6;
+#X floatatom 109 398 5 0 0 0 - - -;
+#X obj 94 427 f;
+#X floatatom 310 386 5 0 100 2 %scrambled #0-scramble_pc -;
+#X obj 184 408 hradio 15 1 0 6 empty \$0-variation-set variation 0
+-8 1 10 -262144 -1 -1 1;
+#X obj 184 428 + 1;
+#X obj 310 407 * 0.01;
+#X floatatom 310 429 5 0 0 0 - - -;
+#X obj 95 447 pack f f f;
+#X obj 74 390 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 106 308 You cannot navigate to a variation that has not;
+#X text 113 320 been filled yet.;
+#X text 109 333 Variation 0 is the original sequence. You cannot;
+#X text 114 346 scramble into there.;
+#N canvas 3 89 450 300 init 0;
+#X obj 150 86 loadbang;
+#X msg 150 108 50;
+#X obj 150 130 s \$0-scramble_pc;
+#X obj 291 156 s \$0-slot;
+#X msg 291 107 2;
+#X obj 356 157 s \$0-variation;
+#X msg 356 106 0;
+#X connect 0 0 1 0;
+#X connect 0 0 4 0;
+#X connect 0 0 6 0;
+#X connect 1 0 2 0;
+#X connect 4 0 3 0;
+#X connect 6 0 5 0;
+#X restore 295 470 pd init;
+#N canvas 3 89 450 300 sortMsg 0;
+#X obj 101 76 inlet;
+#X obj 101 98 route scramble jumpTo;
+#X msg 52 168 set scramble \$1 \$2 \$3;
+#X obj 52 190 outlet;
+#X obj 232 190 outlet;
+#X msg 232 168 set jumpTo \$1 \$2;
+#X obj 339 146 t b;
+#X obj 339 168 del 0;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 5 0;
+#X connect 1 1 6 0;
+#X connect 2 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 4 0;
+#X restore 103 490 pd sortMsg;
+#X msg 103 527;
+#X msg 160 511;
+#X msg 95 469 scramble \$1 \$2 \$3;
+#X connect 42 0 40 0;
+#X connect 43 0 40 0;
+#X connect 44 0 40 0;
+#X connect 46 0 47 0;
+#X connect 47 0 48 1;
+#X connect 48 0 54 0;
+#X connect 49 0 52 0;
+#X connect 50 0 51 0;
+#X connect 51 0 54 1;
+#X connect 52 0 53 0;
+#X connect 53 0 54 2;
+#X connect 54 0 64 0;
+#X connect 55 0 48 0;
+#X connect 61 0 62 0;
+#X connect 61 1 63 0;
+#X connect 63 0 40 0;
+#X connect 64 0 40 0;
+#X connect 64 0 61 0;
