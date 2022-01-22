@@ -1549,7 +1549,6 @@ void polyMath_tilde_swapElement(t_polyMath_tilde *x, t_symbol *s, t_int argc, t_
       x->swapE = atom_getfloat(argv+5);
 
     }
-  //this is a placeholder for the function that will re-organise sequences
 }
 
 void polyMath_tilde_initSeqSlot(t_polyMath_tilde *x, t_floatarg newSeqSlot, t_floatarg isSeq)
